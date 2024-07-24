@@ -1,0 +1,1299 @@
+<app-employee-modal [selectedUser]="selectedUser"></app-employee-modal>
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title">Profile</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Profile</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="card mb-0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="profile-view">
+                        <div class="profile-img-wrap">
+                            <div class="profile-img">
+                                <a><img alt="" [src]="selectedUser?.profile_photo || imageProfile"></a>
+                            </div>
+                        </div>
+                        <div class="profile-basic">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="profile-info-left">
+                                        <h3 class="user-name m-t-0 mb-0">{{selectedUser?.firstname}} {{selectedUser?.lastname}}</h3>
+                                        <h6 class="text-muted">{{selectedUser?.position}}</h6>
+                                        <small class="text-muted">{{selectedUser?.role}}</small>
+                                        <div class="staff-id"></div><br>
+                                        <div class="staff-id">Date of Join : {{selectedUser?.joining_date}}</div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <ul class="personal-info">
+                                        <li>
+                                            <div class="title">Phone:</div>
+                                            <div class="text"><a href="">{{selectedUser?.tel}}</a></div>
+                                        </li>
+                                        <li>
+                                            <div class="title" readonly>Email:</div>
+                                            <div class="text"><a href="">{{selectedUser?.email}}</a></div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Birthday:</div>
+                                            <div class="text">{{selectedUser?.birthday_date|date:'MMMM d, y'}}</div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Address:</div>
+                                            <div class="text">{{selectedUser?.address}}</div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Gender:</div>
+                                            <div class="text">{{selectedUser?.gender}}</div>
+                                        </li>
+                                        <!-- <li>
+                                            <div class="title">Reports to:</div>
+                                            <div class="text">
+                                                <div class="avatar-box" *ngIf="selectedUser?.manager?.profile_photo">
+                                                    <div class="avatar avatar-xs">
+                                                        <img src="{{selectedUser?.manager?.profile_photo}}" alt="">
+                                                    </div>
+                                                </div>                                                
+                                                <a [routerLink] = "routes.employeeProfile">
+                                                    {{selectedUser?.manager?.firstname}} {{selectedUser?.manager?.lastname}}
+                                                </a>
+                                            </div>
+                                        </li> -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pro-edit" *ngIf="['Talent Management','Admin'].includes(connectedUser.role?.name) || connectedUser.id==id"><a data-bs-target="#profile_info" data-bs-toggle="modal" class="edit-icon"><i
+                                    class="fa-solid fa-pencil"></i></a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card tab-box">
+        <div class="row user-tabs">
+            <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
+                <ul class="nav nav-tabs nav-tabs-bottom">
+                    <li class="nav-item"><a href="#emp_profile" data-bs-toggle="tab" class="nav-link active">Profile</a></li>
+                    <li class="nav-item" *ngIf="['Simple User','Scrum Master','ProjectManager'].includes(connectedUser.role?.name) || projects.length>0"><a href="#emp_projects" data-bs-toggle="tab" class="nav-link">Projects</a></li>
+                    <li class="nav-item"><a href="#emp_assets" data-bs-toggle="tab" class="nav-link">Assets</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-content">
+
+        <!-- Profile Info Tab -->
+        <div id="emp_profile" class="pro-overview tab-pane fade show active">
+            <div class="row">
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill">
+                        <div class="card-body">
+                            <h3 class="card-title">Personal Informations <a class="edit-icon" *ngIf="['Talent Management','Admin'].includes(connectedUser.role?.name) || connectedUser.id==id"  data-bs-toggle="modal"
+                                    data-bs-target="#personal_info_modal"><i class="fa-solid fa-pencil"></i></a></h3>
+                            <ul class="personal-info">
+                                <li>
+                                    <div class="title">Identity Card Number.</div>
+                                    <div class="text">{{selectedUser?.id_card}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Passport No.</div>
+                                    <div class="text">{{selectedUser?.passport_no}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Passport Exp Date.</div>
+                                    <div class="text">{{selectedUser?.passport_exp_date}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Tel</div>
+                                    <div class="text"><a href="">{{selectedUser?.tel}}</a></div>
+                                </li>
+                                <li>
+                                    <div class="title">Nationality</div>
+                                    <div class="text">{{selectedUser?.nationality}}</div>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill">
+                        <div class="card-body">
+                            <h3 class="card-title">Additional Informations <a class="edit-icon" *ngIf="['Talent Management','Admin'].includes(connectedUser.role?.name) || connectedUser.id==id" data-bs-toggle="modal"
+                                    data-bs-target="#emergency_contact_modal"><i class="fa-solid fa-pencil"></i></a></h3>
+                            
+                            <ul class="personal-info">
+                                
+                                <li>
+                                    <div class="title">Social Security No.</div>
+                                    <div class="text">{{selectedUser?.social_security_number}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Type of Contract</div>
+                                    <div class="text">{{selectedUser?.current_type_of_contract}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Salary</div>
+                                    <div class="text">{{selectedUser?.current_salary}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Marital status</div>
+                                    <div class="text">{{selectedUser?.marital_status}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Status</div>
+                                    <div class="text">{{selectedUser?.status}}</div>
+                                </li>
+                            </ul>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill">
+                        <div class="card-body">
+                            <h3 class="card-title">Bank information <a class="edit-icon" *ngIf="['Talent Management','Admin'].includes(connectedUser.role?.name) || connectedUser.id==id" data-bs-toggle="modal"
+                                data-bs-target="#bank_infos"><i class="fa-solid fa-pencil"></i></a></h3>
+                            <ul class="personal-info">
+                                <li>
+                                    <div class="title">Bank name</div>
+                                    <div class="text">{{selectedUser?.bank_name}}</div>
+                                </li>
+                                <li>
+                                    <div class="title">Bank account  No. </div>
+                                    <div class="text"> {{selectedUser?.rib}}</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill">
+                        <div class="card-body">
+                            <h3 class="card-title">Family Informations <a class="edit-icon" *ngIf="connectedUser.role?.name=='Talent Management'||connectedUser.id==id" data-bs-toggle="modal"
+                                    data-bs-target="#family_info_modal"><i class="fa-solid fa-pencil"></i></a></h3>
+                            <div class="table-responsive">
+                                <table class="table table-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Relationship</th>
+                                            <th>Date of Birth</th>
+                                            <th>Phone</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Leo</td>
+                                            <td>Brother</td>
+                                            <td>Feb 16th, 2023</td>
+                                            <td>9876543210</td>
+                                            <td class="text-end">
+                                                <div class="dropdown dropdown-action">
+                                                    <a aria-expanded="false" data-bs-toggle="dropdown"
+                                                        class="action-icon dropdown-toggle"><i
+                                                            class="material-icons ">more_vert</i></a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item"><i class="fa-solid fa-pencil m-r-5"></i>
+                                                            Edit</a>
+                                                        <a class="dropdown-item"><i class="fa-regular fa-trash-can m-r-5"></i>
+                                                            Delete</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <!-- <div class="row">
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill">
+                        <div class="card-body">
+                            <h3 class="card-title">Education Informations <a class="edit-icon" *ngIf="connectedUser.role?.name=='Talent Management'||connectedUser.id==id" data-bs-toggle="modal"
+                                    data-bs-target="#education_info"><i class="fa-solid fa-pencil"></i></a>
+                            </h3>
+                            <div class="experience-box">
+                                <ul class="experience-list">
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">International College of Arts and Science
+                                                    (UG)</a>
+                                                <div>Bsc Computer Science</div>
+                                                <span class="time">2000 - 2003</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">International College of Arts and Science
+                                                    (PG)</a>
+                                                <div>Msc Computer Science</div>
+                                                <span class="time">2000 - 2003</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 d-flex">
+                    <div class="card profile-box flex-fill">
+                        <div class="card-body">
+                            <h3 class="card-title">Experience <a class="edit-icon" *ngIf="connectedUser.role?.name=='Talent Management'||connectedUser.id==id" data-bs-toggle="modal"
+                                    data-bs-target="#experience_info"><i class="fa-solid fa-pencil"></i></a></h3>
+                            <div class="experience-box">
+                                <ul class="experience-list">
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">Web Designer at Zen Corporation</a>
+                                                <span class="time">Jan 2013 - Present (5 years 2 months)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">Web Designer at Ron-tech</a>
+                                                <span class="time">Jan 2013 - Present (5 years 2 months)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="experience-user">
+                                            <div class="before-circle"></div>
+                                        </div>
+                                        <div class="experience-content">
+                                            <div class="timeline-content">
+                                                <a href="#/" class="name">Web Designer at Dalt Technology</a>
+                                                <span class="time">Jan 2013 - Present (5 years 2 months)</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <!-- /Profile Info Tab -->
+
+        <!-- Projects Tab -->
+        <div class="tab-pane fade" id="emp_projects">
+            <div class="row">
+                <div class="col-lg-4 col-sm-6 col-md-4 col-xl-3" *ngFor="let project of projects">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="project-title"><a [routerLink]="'/projects/project-view/'+ project.id">{{project?.name}}</a></h4>
+                            
+                            <p class="text-muted">{{project?.description.slice(0,10)}} ...
+                            </p>
+                            <div class="pro-deadline m-b-15">
+                                <div class="sub-title">
+                                    Deadline:
+                                </div>
+                                <div class="text-muted">
+                                    {{ project?.end_date | date: 'dd MMM, yyyy' }}
+                                </div>
+                            </div>
+                            <div class="project-members m-b-15">
+                                <div>Project Manager :</div>
+                                <ul class="team-members">
+                                    <li>
+                                        <a href="javascript:void(0);" data-bs-toggle="tooltip" title="{{project.project_manager?.firstname}} {{project.project_manager?.lastname}}"><img src="{{project.project_manager?.profile_photo || image}}" alt="User Image"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="project-members m-b-15">
+                                <div>Scrum Master :</div>
+                                <ul class="team-members">
+                                    <li>
+                                        <a href="javascript:void(0);" data-bs-toggle="tooltip" title="{{project.scrum_master?.firstname}} {{project.scrum_master?.lastname}}"><img src="{{project.scrum_master?.profile_photo || image}}" alt="User Image"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="project-members m-b-15">
+                                <div>Team :</div>
+                                <ul class="team-members" >
+                                    <li *ngFor="let team of project?.assigned_to.slice(0,3)">
+                                        <a href="javascript:void(0);" data-bs-toggle="tooltip" Mattooltip="John Doe" title="John Doe"><img src="{{team?.profile_photo}}" alt="User Image"></a>
+                                    </li>
+                                   <!---- <li>
+                                        <a href="javascript:void(0);" data-bs-toggle="tooltip"  Mattooltip="Richard Miles" title="Richard Miles"><img src="assets/img/profiles/avatar-09.jpg" alt="User Image"></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" data-bs-toggle="tooltip"  Mattooltip="John Smith" title="John Smith"><img src="assets/img/profiles/avatar-10.jpg" alt="User Image"></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);" data-bs-toggle="tooltip" title="Mike Litorus"><img src="assets/img/profiles/avatar-05.jpg" alt="User Image"></a>
+                                    </li>-->
+                                    <li class="dropdown avatar-dropdown" >
+                                        <a href="javascript:void(0);" class="all-users dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">+{{project.assigned_to.length -3}}</a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <div class="avatar-group">
+                                                <a class="avatar avatar-xs" *ngFor="let team of project?.assigned_to.slice(3)" href="javascript:void(0);">
+                                                    <img src="{{team.profile_photo}}" alt="User Image">
+                                                </a>
+                                            </div>
+                                            <div class="avatar-pagination">
+                                                <ul class="pagination">
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="javascript:void(0);" aria-label="Previous">
+                                                            <span aria-hidden="true">«</span>
+                                                            <span class="visually-hidden">Previous</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+                                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                                                    <li class="page-item">
+                                                        <a class="page-link" href="javascript:void(0);" aria-label="Next">
+                                                            <span aria-hidden="true">»</span>
+                                                        <span class="visually-hidden">Next</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li> 
+                                </ul>
+                            </div><br>
+                            <p class="m-b-10">Progress <span class="text-success float-end">{{project?.progress|number:'1.1'}}%</span></p>
+                            <div class="progress progress-xs mb-0">
+                                <div class="'progress-bar bg-success" [style]="'width:'+project.progress+'%'" role="progressbar" data-bs-toggle="tooltip"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- /Projects Tab -->
+            <!-- Asset List -->
+    <div class="tab-pane fade" id="emp_assets">
+        <div class="table-responsive table-newdatatable">
+            <a *ngIf="connectedUser.permissions.includes('add_userasset')" class="btn add-btn m-r-5" data-bs-toggle="modal" data-bs-target="#add_asset">
+                <i class="fa-solid fa-plus"></i> Add Asset
+            </a><br><br>
+            <table class="table table-new custom-table mb-0 datatable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Asset Brand</th>
+                        <th>Assigned Date</th>
+                        <th>View</th>
+                        <th *ngIf="connectedUser.permissions.includes('change_userasset') || connectedUser.permissions.includes('delete_userasset')">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let asset of selectedAsset; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td>
+                            <a href="#" class="table-imgname">
+                                <img [src]="getAssetImageUrl(asset?.asset)" class="me-2" alt="{{ asset?.asset }} Image">
+                                <span>{{ asset?.asset }}</span>
+                            </a>
+                        </td>
+                        <td>{{ asset?.brand }}</td>
+                        <td>{{ asset?.assigned_date | date: 'yyyy-MM-dd h:mm:ss a' }}</td>
+                        <td>
+                            <div class="table-actions d-flex">
+                                <a class="delete-table me-2" (click)="showAssetAssignmentDetails(asset)">
+                                    <img src="assets/img/icons/eye.svg" alt="Eye Icon">
+                                </a>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="dropdown dropdown-action" *ngIf="connectedUser.permissions.includes('change_userasset') || connectedUser.permissions.includes('delete_userasset')">
+                                <a class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+                                    class="material-icons">more_vert</i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                  <a class="dropdown-item" *ngIf="connectedUser.permissions.includes('change_userasset')" data-bs-toggle="modal" data-bs-target="#edit_asset" (click)="passAssetData(asset)">
+                                    <i class="fa-solid fa-pencil m-r-5"></i> Edit
+                                </a>
+                                  <a class="dropdown-item" *ngIf="connectedUser.permissions.includes('delete_userasset')" data-bs-toggle="modal"  data-bs-target="#delete_asset" (click)="passAssetData(asset)"><i
+                                      class="fa-regular fa-trash-can m-r-5" ></i>
+                                    Delete</a>
+                                </div>
+                              </div>
+                        </td>                                                                                   
+                    </tr>
+                </tbody>
+                <tbody *ngIf=" selectedAsset.length === 0">
+                    <tr>
+                        <td colspan="6" class="text-center">No assets assigned</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <!-- Asset Details -->
+    <div *ngIf="selectedAssetDetails">
+        <div class="assign-head">
+            <div class="assign-content">
+                <img [src]="getAssetImageUrl(selectedAssetDetails?.asset)" alt="Asset Image" class="asset-image me-2">
+                <h6>{{ selectedAssetDetails?.asset }}</h6>
+            </div>            
+            
+        </div>
+    
+        <div class="card asset-box">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <h5>
+                                <div class="aset-img">
+                                    <img src="assets/img/icons/icon-03.svg" alt="Category Icon">
+                                </div>Asset Info</h5>
+                        <div class="asset-info">
+                            <div class="asset-info-det">
+                                <h6>{{ selectedAssetDetails?.asset?.asset_type }}</h6>
+                                <ul>
+                                    <li>Serial Number <span>{{ selectedAssetDetails?.serial_number }}</span></li>
+                                    <li>Brand <span>{{ selectedAssetDetails?.brand }}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="asset-history">
+                            <h5>Asset Details</h5>
+                            <ul>
+                                <li>
+                                    <div class="aset-img">
+                                        <img src="assets/img/icons/icon-01.svg" alt="Vendor Icon">
+                                    </div>
+                                    <div class="asset-inf">
+                                        <h6>Vendor</h6>
+                                        <p>{{ selectedAssetDetails?.vendor }}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="aset-img">
+                                        <img src="assets/img/icons/icon-04.svg" alt="Cost Icon">
+                                    </div>
+                                    <div class="asset-inf">
+                                        <h6>Cost</h6>
+                                        <p>{{ selectedAssetDetails?.cost }}</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="aset-img">
+                                        <img src="assets/img/icons/icon-02.svg" alt="Warranty Icon">
+                                    </div>
+                                    <div class="asset-inf">
+                                        <h6>Warranty</h6>
+                                        <p>From {{ selectedAssetDetails?.assigned_date | date:'MMMdd, yyyy' }} to {{ selectedAssetDetails?.warranty | date:'MMMdd, yyyy' }}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<br><br>
+    
+    
+    </div>
+</div>
+<!-- /Page Content -->
+				<!-- Profile Modal -->
+				<div id="profile_info" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Profile Information</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="reset()">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form [formGroup]="editProfileInfo">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="profile-img-wrap edit-img">
+                                                <img class="inline-block" [src]="imagePreviewUrl || selectedUser?.profile_photo || imageProfile" alt="user profile photo">
+                                                <div class="fileupload btn">
+                                                    <span class="btn-text">edit</span>
+                                                    <input class="form-control upload" type="file" (change)="onImageSelected($event)" accept="image/*">
+                                                </div>
+                                            </div>
+                                
+											<div class="row">
+												<div class="col-md-6">
+													<div class="input-block mb-3">
+														<label class="col-form-label" for="firstname">First Name</label>
+														<input type="text" class="form-control" id="firstname" autocomplete="name" formControlName="firstname" >
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="input-block mb-3">
+														<label class="col-form-label" for="lastname">Last Name</label>
+														<input type="text" class="form-control" formControlName="lastname" id="lastname" autocomplete="family-name">
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="input-block mb-3 date-input3">
+														<label class="col-form-label" for="birthday_date">Birth Date</label>
+														<div class="cal-icon">
+															<input class="form-control datetimepicker" type="text" id="birthday_date" formControlName="birthday_date" bsDatepicker container=".date-input3" [value]="selectedUser?.birthday_date | date:'MM/dd/yyy'">
+														</div>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="input-block mb-3">
+                                                        <label class="col-form-label" for="gender">Gender</label>
+                                                        <mat-select formControlName="gender" id="gender" class="user-assets select form-control">
+                                                          <mat-option *ngFor="let gender of ['Male', 'Female']" [value]="gender">{{gender}}</mat-option>
+                                                        </mat-select>
+                                                      </div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="address">Address</label>
+												<input type="text" class="form-control" id="address" autocomplete="address-line1" formControlName="address">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="role">Role</label>
+												<input type="text" class="form-control" id="role" formControlName="role" readonly>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="position">Position</label>
+												<input type="text" class="form-control" id="position" formControlName="position">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3 date-input3">
+												<label class="col-form-label" for="joining_date">Joining Date</label>
+                                                <div class="cal-icon">
+													<input class="form-control datetimepicker" type="text" id="joining_date" formControlName="joining_date" [value]="editProfileInfo.value.joining_date" [readonly]="selectedUser">
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="tel">Phone Number</label>
+												<input type="text" class="form-control" autocomplete="mobile" id="tel" formControlName="tel">
+											</div>
+										</div>
+										<!-- <div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="manager">Reports To <span class="text-danger">*</span></label>
+                                                <mat-select formControlName="manager" id="manager" placeholder="Select Manager"class="user-assets select form-control" placement="bottom">
+                                                    <mat-option *ngFor="let data of selectedList14" [value]="data.value">
+                                                        <span class="avatar"><img [src]="data.profile_photo" alt="{{ data.label }}"></span>
+                                                        <span class="message-author">{{ data.label }}</span>
+                                                    </mat-option>
+                                                </mat-select> 
+											</div>
+										</div> -->
+                                        <div class="col-md-12">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="email">Email</label>
+												<input type="text" class="form-control" id="email" autocomplete="email" formControlName="email" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn" type="button" (click)="updateUser()">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Profile Modal -->
+				
+				<!-- Personal Info Modal -->
+				<div id="personal_info_modal" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Personal Information</h5>
+								<button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+
+							</div>
+                            <!-- Alerts -->
+                                <!-- /Alerts -->
+							<div class="modal-body">
+								<form [formGroup]="editProfileInfo">
+									<div class="row">
+                                        <div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="id_card">Identity Card Number</label>
+                                                <input class="form-control" type="text" id="id_card" formControlName="id_card">
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="passport_no">Passport No</label>
+												<input type="text" class="form-control" formControlName="passport_no" id="passport_no" >
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3 date-input22">
+												<label class="col-form-label" for="passport_exp_date">Passport Expiry Date</label>
+												<div class="cal-icon">
+													<input class="form-control datetimepicker" type="text" id="passport_exp_date" bsDatepicker container=".date-input22" formControlName="passport_exp_date" value={{this.selectedUser?.passport_exp_date}}>
+
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6 d-flex align-items-center">
+											<div class="input-block mb-10 ">
+												<label class="col-form-label" for="nationality">Nationality <span class="text-danger">*</span></label>
+												<input class="form-control" id="nationality" type="text" formControlName="nationality">
+
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn"  type="button" (click)="updateUser()">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Personal Info Modal -->
+				
+				<!-- Family Info Modal -->
+				<!-- <div id="family_info_modal" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"> Additionnal Informations</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form [formGroup]="editProfileInfo">
+									<div class="row">
+                                        <div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="social_security_number">Social Security Number</label>
+                                                <input class="form-control" type="text" id="social_security_number" formControlName="social_security_number">
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="current_type_of_contract">Type Of Contract</label>
+												<input type="text" class="form-control" id="current_type_of_contract" formControlName="current_type_of_contract">
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3 date-input2">
+												<label class="col-form-label" for="current_salary">Salary</label>
+												<div class="cal-icon">
+													<input type="text" class="form-control" id="current_salary" formControlName="current_salary">
+
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="marital_status">Marital Status</label>
+												<input class="form-control" type="text" id="marital_status" formControlName="marital_status">
+											</div>
+										</div>
+										<div class="col-md-6 d-flex align-items-center">
+											<div class="input-block mb-10 ">
+												<label class="col-form-label" for="status">Status <span class="text-danger">*</span></label>
+												<mat-select formControlName="status" id="status" class="user-assets select form-control">
+                                                    <mat-option *ngFor="let status of ['Active', 'Inactive']" [value]="status">{{status}}</mat-option>
+                                                </mat-select>
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn"  type="button" (click)="updateUser()">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div> -->
+				<!-- /Family Info Modal -->
+				
+				<!-- Emergency Contact Modal -->
+				<div id="emergency_contact_modal" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Personal Information</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form [formGroup]="editProfileInfo">
+									<div class="row">
+                                        <div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="social_security_number">Social Security Number</label>
+                                                <input class="form-control" type="text" id="social_security_number" formControlName="social_security_number">
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="current_type_of_contract">Type Of Contract</label>
+												<input type="text" class="form-control" id="current_type_of_contract" formControlName="current_type_of_contract" readonly>
+
+											</div>
+										</div>
+										<div class="col-md-6">	
+                                            <div class="input-block mb-3">	
+												<label class="col-form-label" for="current_salary">Salary</label>										
+													<input type="text" class="form-control" id="current_salary" formControlName="current_salary" readonly>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="marital_status">Marital Status <span class="text-danger">*</span></label>
+												<mat-select formControlName="marital_status" id="marital_status" class="user-assets select form-control">
+                                                    <mat-option *ngFor="let marital_status of ['Married', 'Single', 'Divorced']" [value]="marital_status">{{marital_status}}</mat-option>
+                                                </mat-select>
+											</div>
+										</div>
+										<div class="col-md-6 d-flex align-items-center" [hidden]="connectedUser.role!='Talent Management'">
+											<div class="input-block mb-10 ">
+												<label class="col-form-label" for="status">Status <span class="text-danger">*</span></label>
+												<mat-select formControlName="status" id="status" class="user-assets select form-control">
+                                                    <mat-option *ngFor="let status of ['Active', 'Inactive']" [value]="status">{{status}}</mat-option>
+                                                </mat-select>
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn"  type="button" (click)="updateUser()">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Emergency Contact Modal -->
+
+                <!-- Emergency Contact Modal -->
+				<div id="bank_infos" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Bank Information</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form [formGroup]="editProfileInfo">
+									<div class="row">
+                                        <div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="bank_name">Bank Name</label>
+                                                <input class="form-control" type="text" id="bank_name" formControlName="bank_name">
+
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="rib">Account Number</label>
+												<input type="text" class="form-control" id="rib" formControlName="rib">
+
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn"  type="button" (click)="updateUser()">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Emergency Contact Modal -->
+				
+				<!-- Education Modal -->
+				<div id="education_info" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title"> Education Informations</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-scroll">
+										<div class="card">
+											<div class="card-body">
+												<h3 class="card-title">Education Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa-regular fa-trash-can"></i></a></h3>
+												<div class="row">
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Institution</mat-label>
+                                                              <input type="text" value="Oxford University" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Subject</mat-label>
+                                                              <input type="text" value="Computer Science" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs date-input3">
+                                                            <mat-form-field class="example-full-width cal-icon">
+                                                                <mat-label>Starting Date</mat-label>
+                                                                <input  bsDatepicker container=".date-input3" type="text" matInput value="01-06-2022">
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs date-input4">
+                                                            <mat-form-field class="example-full-width cal-icon">
+                                                                <mat-label>Complete Date</mat-label>
+                                                                <input  bsDatepicker container=".date-input4" type="text" matInput value="09-06-2022">
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Degree</mat-label>
+                                                              <input type="text" value="BE Computer Science" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Grade</mat-label>
+                                                              <input type="text" value="Grade A" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="card">
+											<div class="card-body">
+												<h3 class="card-title">Education Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa-regular fa-trash-can"></i></a></h3>
+												<div class="row">
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Institution</mat-label>
+                                                              <input type="text" value="Oxford University" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Subject</mat-label>
+                                                              <input type="text" value="Computer Science" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs date-input5">
+                                                            <mat-form-field class="example-full-width cal-icon">
+                                                                <mat-label>Starting Date</mat-label>
+                                                                <input  bsDatepicker container=".date-input5" type="text" matInput value="01-06-2022">
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs date-input5">
+                                                            <mat-form-field class="example-full-width cal-icon">
+                                                                <mat-label>Complete Date</mat-label>
+                                                                <input bsDatepicker container=".date-input6" type="text" matInput value="09-06-2022">
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Degree</mat-label>
+                                                              <input type="text" value="BE Computer Science" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Grade</mat-label>
+                                                              <input type="text" value="Grade A" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+												</div>
+												<div class="add-more">
+													<a href="javascript:void(0);"><i class="fa-solid fa-plus-circle"></i> Add More</a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Education Modal -->
+				
+				<!-- Experience Modal -->
+				<div id="experience_info" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Experience Informations</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-scroll">
+										<div class="card">
+											<div class="card-body">
+												<h3 class="card-title">Experience Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa-regular fa-trash-can"></i></a></h3>
+												<div class="row">
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Company Name</mat-label>
+                                                              <input type="text" value="Digital Devlopment Inc" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Location</mat-label>
+                                                              <input type="text" value="United States" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Job Position</mat-label>
+                                                              <input type="text" value="Web Developer" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs date-input7">
+                                                            <mat-form-field class="example-full-width cal-icon">
+                                                                <mat-label>Period From</mat-label>
+                                                                <input  bsDatepicker container=".date-input7" type="text" matInput value="09/06/2022">
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs date-input8">
+                                                        <mat-form-field class="example-full-width cal-icon">
+                                                            <mat-label>Period To</mat-label>
+                                                            <input  bsDatepicker container=".date-input8" type="text" matInput value="12/06/2022">
+                                                        </mat-form-field>
+                                                    </div>
+													</div>
+												</div>
+											</div>
+										</div>
+										
+										<div class="card">
+											<div class="card-body">
+												<h3 class="card-title">Experience Informations <a href="javascript:void(0);" class="delete-icon"><i class="fa-regular fa-trash-can"></i></a></h3>
+                                                <div class="row">
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Company Name</mat-label>
+                                                              <input type="text" value="Digital Devlopment Inc" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Location</mat-label>
+                                                              <input type="text" value="United States" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs">
+                                                            <mat-form-field class="example-full-width">
+                                                              <mat-label>Job Position</mat-label>
+                                                              <input type="text" value="Web Developer" matInput>
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+														<div class="input-block mb-3 form-focus inputs date-input9">
+                                                            <mat-form-field class="example-full-width cal-icon">
+                                                                <mat-label>Period From</mat-label>
+                                                                <input  bsDatepicker container=".date-input9" type="text" matInput value="09/06/2022">
+                                                            </mat-form-field>
+                                                        </div>
+													</div>
+													<div class="col-md-6">
+                                                        <div class="input-block mb-3 form-focus inputs date-input10">
+                                                        <mat-form-field class="example-full-width cal-icon">
+                                                            <mat-label>Period To</mat-label>
+                                                            <input  bsDatepicker container=".date-input10" type="text" matInput value="12/06/2022">
+                                                        </mat-form-field>
+                                                    </div>
+													</div>
+												</div>
+												<div class="add-more">
+													<a href="javascript:void(0);"><i class="fa-solid fa-plus-circle"></i> Add More</a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Experience Modal -->
+
+                <div id="add_asset" class="modal custom-modal fade" role="dialog" (hidden.bs.modal)="reset()">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Assign asset to the employee</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="reset()"  data-bs-target="#add_asset">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form [formGroup]="addAssetForm">
+                                    <div *ngIf="errorMessage!=''" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <strong>Error!</strong>{{errorMessage}}
+                                    </div>
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Select Asset <span class="text-danger">*</span></label>
+                                        <mat-select class="form-control" [formControlName]="'asset'"
+                                                    [class.invalid]="addAssetForm.get('asset')?.invalid && addAssetForm.get('asset')?.touched"
+                                                    placeholder="Select Asset Here">
+                                            <mat-option value="" disabled style="display: none;">Select Asset Here</mat-option>
+                                            <mat-option *ngFor="let type of assetTypes" [value]="type">{{ type }}</mat-option>
+                                        </mat-select>
+                                        <div *ngIf="addAssetForm.get('asset')?.invalid && addAssetForm.get('asset')?.touched">
+                                            <small class="text-danger">* Asset Type is required</small>
+                                        </div>
+                                    </div>                                    
+                                    <!-- Serial Number -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Serial Number <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="addAssetForm.get('serial_number')?.invalid && addAssetForm.get('serial_number')?.touched"
+                                            formControlName="serial_number">
+                                        <div *ngIf="addAssetForm.get('serial_number')?.invalid && addAssetForm.get('serial_number')?.touched">
+                                            <small class="text-danger">* Serial number is required</small>
+                                        </div>
+                                    </div>
+                                    <!-- Brand -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Brand <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="addAssetForm.get('brand')?.invalid && addAssetForm.get('brand')?.touched"
+                                            formControlName="brand">
+                                        <div *ngIf="addAssetForm.get('brand')?.invalid && addAssetForm.get('brand')?.touched">
+                                            <small class="text-danger">* Brand is required</small>
+                                        </div>
+                                    </div>
+                                    <!-- Vendor -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Vendor <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="addAssetForm.get('vendor')?.invalid && addAssetForm.get('vendor')?.touched"
+                                            formControlName="vendor">
+                                        <div *ngIf="addAssetForm.get('vendor')?.invalid && addAssetForm.get('vendor')?.touched">
+                                            <small class="text-danger">* Vendor is required</small>
+                                        </div>
+                                    </div>
+                                    <!-- Cost -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Cost <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="addAssetForm.get('cost')?.invalid && addAssetForm.get('cost')?.touched"
+                                            formControlName="cost">
+                                        <div *ngIf="addAssetForm.get('cost')?.invalid && addAssetForm.get('cost')?.touched">
+                                            <small class="text-danger">* Cost is required</small>
+                                        </div>
+                                    </div>
+                                    <div class="submit-section">
+                                        <button class="btn btn-primary submit-btn" (click)="addAssetsToUser()">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="edit_asset" class="modal custom-modal fade" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Asset</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" data-bs-target="#edit_asset">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <form [formGroup]="editAssetForm">
+                                    <!-- Asset Type -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Asset Type <span class="text-danger">*</span></label>
+                                        <input class="form-control" [formControlName]="'asset'"  readonly
+                                                    [class.invalid]="editAssetForm.get('asset')?.invalid && editAssetForm.get('asset')?.touched"
+                                                    placeholder="Select Asset Here">
+                                        <div *ngIf="editAssetForm.get('asset')?.invalid && editAssetForm.get('asset')?.touched">
+                                            <small class="text-danger">* Asset Type is required</small>
+                                        </div>
+                                    </div>                                    
+                                    <!-- Serial Number -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Serial Number <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="editAssetForm.get('serial_number')?.invalid && editAssetForm.get('serial_number')?.touched"
+                                            formControlName="serial_number">
+                                        <div *ngIf="editAssetForm.get('serial_number')?.invalid && editAssetForm.get('serial_number')?.touched">
+                                            <small class="text-danger">* Serial number is required</small>
+                                        </div>
+                                    </div>
+                                    <!-- Brand -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Brand <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="editAssetForm.get('brand')?.invalid && editAssetForm.get('brand')?.touched"
+                                            formControlName="brand">
+                                        <div *ngIf="editAssetForm.get('brand')?.invalid && editAssetForm.get('brand')?.touched">
+                                            <small class="text-danger">* Brand is required</small>
+                                        </div>
+                                    </div>
+                                    <!-- Vendor -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Vendor <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="editAssetForm.get('vendor')?.invalid && editAssetForm.get('vendor')?.touched"
+                                            formControlName="vendor">
+                                        <div *ngIf="editAssetForm.get('vendor')?.invalid && editAssetForm.get('vendor')?.touched">
+                                            <small class="text-danger">* Vendor is required</small>
+                                        </div>
+                                    </div>
+                                    <!-- Cost -->
+                                    <div class="input-block mb-3">
+                                        <label class="col-form-label" for="">Cost <span class="text-danger">*</span></label>
+                                        <input class="form-control"
+                                            [class.invalid]="editAssetForm.get('cost')?.invalid && editAssetForm.get('cost')?.touched"
+                                            formControlName="cost">
+                                        <div *ngIf="editAssetForm.get('cost')?.invalid && editAssetForm.get('cost')?.touched">
+                                            <small class="text-danger">* Cost is required</small>
+                                        </div>
+                                    </div>
+                                    <div class="submit-section">
+                                        <button class="btn btn-primary submit-btn" (click)="editAsset()">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal custom-modal fade" id="delete_asset" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="form-header">
+                                    <h3>Delete Asset From User</h3>
+                                    <p>Are you sure want to delete?</p>
+                                </div>
+                                <div class="modal-btn delete-action">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <a class="btn btn-primary continue-btn" (click)="deleteAsset()">Delete</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

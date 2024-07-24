@@ -1,0 +1,19 @@
+.event-content {
+    white-space: normal; /* Allows the text to wrap */
+    word-wrap: break-word; /* Breaks long words */
+  }
+  
+  .event-content img.avatar {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+  
+  .event-content .event-title {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: calc(100% ); /* Adjust width based on the avatar */
+    overflow-wrap: break-word; /* Breaks long words */
+    word-break: break-word; /* Ensures long words break */
+  }
+  

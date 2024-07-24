@@ -1,0 +1,320 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="row">
+      <div class="col-sm-12">
+        <h3 class="page-title">Attendance</h3>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+          <li class="breadcrumb-item active">Attendance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Header -->
+
+  <!-- Search Filter -->
+  <div class="row filter-row">
+    <!-- Month Filter -->
+    <div class="col-sm-6 col-md-2">
+      <div class="input-block mb-3 form-focus select-focus select">
+        <mat-form-field>
+          <mat-label for="month">Month</mat-label>
+          <mat-select id="month" class="mat-select mat-float-lable select" [(ngModel)]="selectedMonth"
+            (ngModelChange)="onSelectionChange()">
+            <mat-option *ngFor="let month of months; let i = index"
+              [value]="i < 9 ? '0' + (i + 1) : (i + 1).toString()">{{ month }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Year Filter -->
+    <div class="col-sm-6 col-md-2">
+      <div class="input-block mb-3 form-focus select-focus select">
+        <mat-form-field>
+          <mat-label for="year">Year</mat-label>
+          <mat-select id="year" class="mat-select mat-float-lable select" [(ngModel)]="selectedYear"
+            (ngModelChange)="onSelectionChange()">
+            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <!-- Search Filter -->
+    <!-- <div class="row filter-row">
+      <div class="col-sm-6 col-md-9">
+        <div class="input-block mb-3 form-focus inputs" >
+            <mat-form-field class="example-full-width">
+            <mat-label>Employee Details</mat-label>
+            <!--<input type="text" matInput>-->
+            <!-- <input  (keyup)="searchData()" [(ngModel)]="searchEmployee" class="form-control form-control-sm" matInput>
+          </mat-form-field>
+        </div>
+      </div>  -->
+    <div class="col-sm-6 col-md-2">
+      <button class="btn" type="button"><i class="fa-solid fa-magnifying-glass text-info"></i></button>
+    </div>
+    </div> 
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="table-responsive">
+        <table class="table table-striped custom-table table-nowrap mb-0">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th *ngFor="let day of daysInMonth">{{ day }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let employee of lstEmployee; let empIndex = index">
+              <td>
+                <h2 class="table-avatar">
+                  <a class="avatar">
+                    <img alt="" [src]="employee?.profile_photo||image">
+                  </a>
+                  <a style="font-size: 15px;">
+                    {{ employee?.firstname }} {{ employee?.lastname }}
+                  </a>
+                </h2>
+              </td>
+              <td *ngFor="let dayString of daysInMonth; let dayIndex = index">
+                <ng-container *ngIf="isWeekday(dayString); else weekendDay">
+                  <div class="dropdown action-label">
+                    <button type="button" class="btn btn-white btn-sm btn-rounded"
+                      (click)="toggleDropdown(empIndex, dayIndex)"
+                      [attr.aria-expanded]="dropdownOpen[empIndex][dayIndex]">
+                      <ng-container [ngSwitch]="selectedStatus[empIndex][dayIndex]">
+                        <i *ngSwitchCase="'Present'" class="fas fa-check text-success me-1"></i>
+                        <i *ngSwitchCase="'Absent'" class="fas fa-times text-danger me-1"></i>
+                        <i *ngSwitchCase="'Half Day'" class="fas fa-clock text-primary me-1"></i>
+                        <i *ngSwitchCase="'Remote'" class="fas fa-home text-warning me-1"></i>
+                        <i *ngSwitchCase="'Permission'" class="fas fa-info-circle text-info me-1"></i>
+                        <i *ngSwitchCase="'Leave'" class="fas fa-suitcase text-primary me-1"></i>
+                        <!-- <i *ngSwitchDefault class="fa-regular fa-circle-dot text-secondary me-1"></i> -->
+                      </ng-container>                      
+                      {{ selectedStatus[empIndex][dayIndex] }}
+                    </button>
+                    <div *ngIf="dropdownOpen[empIndex][dayIndex]" class="dropdown-menu show"
+                      >
+                      <a class="dropdown-item" (click)="updateEmployeeStatus(employee.id, { date: selectedYear + '-' + selectedMonth + '-' + (dayIndex + 1), status: 'Present' })">
+                        <i class="fas fa-check text-success me-1"></i> Present
+                      </a>
+                      <a class="dropdown-item" (click)="updateEmployeeStatus(employee.id, { date: selectedYear + '-' + selectedMonth + '-' + (dayIndex + 1), status: 'Absent' })">
+                        <i class="fas fa-times text-danger me-1"></i> Absent
+                      </a>
+                      <a class="dropdown-item" (click)="updateEmployeeStatus(employee.id, { date: selectedYear + '-' + selectedMonth + '-' + (dayIndex + 1), status: 'Half Day' })">
+                        <i class="fas fa-clock text-primary me-1"></i> Half Day
+                      </a>
+                      <a class="dropdown-item" (click)="updateEmployeeStatus(employee.id, { date: selectedYear + '-' + selectedMonth + '-' + (dayIndex + 1), status: 'Remote' })">
+                        <i class="fas fa-home text-warning me-1"></i> Remote
+                      </a>
+                      <a class="dropdown-item" (click)="updateEmployeeStatus(employee.id, { date: selectedYear + '-' + selectedMonth + '-' + (dayIndex + 1), status: 'Permission' })">
+                        <i class="fas fa-info-circle text-info me-1"></i> Permission
+                      </a>
+                      <a class="dropdown-item" (click)="updateEmployeeStatus(employee.id, { date: selectedYear + '-' + selectedMonth + '-' + (dayIndex + 1), status: 'Leave' })">
+                        <i class="fas fa-suitcase text-primary me-1"></i> Leave
+                      </a>                      
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #weekendDay>
+                  <span class="text-muted"></span>
+                </ng-template>
+              </td>
+
+
+            </tr>
+            <tr *ngIf="lstEmployee.length === 0">
+              <td colspan="10">
+                <h5 style="text-align: center;">No data found</h5>
+              </td>
+            </tr>
+            <!-- <tr *ngIf="lstEmployee.length === 0">
+                            <td colspan="10">
+                                <h5 style="text-align: center;">No data found</h5>
+                            </td>
+                        </tr> -->
+          </tbody>
+        </table>
+      </div>
+      <div class="table_footer">
+        <div class="col-sm-12 col-md-5">
+          <div class="dataTables_info">
+            Showing {{ serialNumberArray[0] }} to
+            {{ serialNumberArray[serialNumberArray.length - 1] }} of
+            {{ totalData }} entries
+          </div>
+        </div>
+
+        <div class="col-sm-12 col-md-7">
+          <div class="pagination_section">
+            <ul class="pagination">
+              <li class="page-item" [ngClass]="{
+                                        disabled: currentPage === 1
+                                      }">
+                <a (click)="getMoreData('previous')" class="page-link" href="javascript:void(0);"
+                  tabindex="-1">Previous</a>
+              </li>
+
+              <ng-container *ngFor="let item of pageNumberArray; let i = index">
+                <li class="page-item" [class.active]="item === currentPage" [ngClass]="
+                                          (pageNumberArray[currentPage - 2] > item &&
+                                            item !== 1 &&
+                                            pageNumberArray.length > 6) ||
+                                          (pageNumberArray[currentPage] < item &&
+                                            item !== 1 &&
+                                            pageNumberArray.length > 6 &&
+                                            pageNumberArray.length !== item)
+                                            ? 'hide-page-no'
+                                            : 'show-page-no'
+                                        ">
+                  <a (click)="moveToPage(item)" class="page-link" href="javascript:void(0);">
+                    {{ item }}
+                  </a>
+                </li>
+                <li class="page-item" *ngIf="
+                                          i === 0 && pageNumberArray.length > 6 && currentPage > 2
+                                        " [hidden]="currentPage === 1" (click)="moveToPage(currentPage - 2)"
+                  (keydown.enter)="moveToPage(currentPage - 2)" tabindex="0">
+                  <a class="page-link" href="javascript:void(0);"> ... </a>
+                </li>
+                <li *ngIf="
+                                          i === pageNumberArray.length - 2 &&
+                                          pageNumberArray.length > 6
+                                        " [hidden]="
+                                          currentPage >=
+                                            pageNumberArray[pageNumberArray.length - 2] ||
+                                          totalData < serialNumberArray[serialNumberArray.length - 1]
+                                        " class="page-item" (click)="moveToPage(currentPage + 2)"
+                  (keydown.enter)="moveToPage(currentPage + 2)" tabindex="0">
+                  <a class="page-link" href="javascript:void(0);"> ... </a>
+                </li>
+              </ng-container>
+
+              <li class="page-item" [ngClass]="{
+                                        disabled:
+                                          currentPage ===
+                                            pageNumberArray[pageNumberArray.length - 1] ||
+                                          lstEmployee.length === 0
+                                      }">
+                <a (click)="getMoreData('next')" class="page-link" href="javascript:void(0);">Next
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<!-- /Page Content -->
+
+<!-- Attendance Modal -->
+<div class="modal custom-modal fade" id="attendance_info" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Attendance Info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card punch-status">
+              <div class="card-body">
+                <h5 class="card-title">Timesheet <small class="text-muted">11 Mar 2023</small></h5>
+                <div class="punch-det">
+                  <h6>Punch In at</h6>
+                  <p>Wed, 11th Mar 2023 10.00 AM</p>
+                </div>
+                <div class="punch-info">
+                  <div class="punch-hours">
+                    <span>3.45 hrs</span>
+                  </div>
+                </div>
+                <div class="punch-det">
+                  <h6>Punch Out at</h6>
+                  <p>Wed, 20th Feb 2023 9.00 PM</p>
+                </div>
+                <div class="statistics">
+                  <div class="row">
+                    <div class="col-md-6 col-6 text-center">
+                      <div class="stats-box">
+                        <p>Break</p>
+                        <h6>1.21 hrs</h6>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-6 text-center">
+                      <div class="stats-box">
+                        <p>Overtime</p>
+                        <h6>3 hrs</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card recent-activity">
+              <div class="card-body">
+                <h5 class="card-title">Activity</h5>
+                <ul class="res-activity-list">
+                  <li>
+                    <p class="mb-0">Punch In at</p>
+                    <p class="res-activity-time">
+                      <i class="fa-regular fa-clock"></i>
+                      10.00 AM.
+                    </p>
+                  </li>
+                  <li>
+                    <p class="mb-0">Punch Out at</p>
+                    <p class="res-activity-time">
+                      <i class="fa-regular fa-clock"></i>
+                      11.00 AM.
+                    </p>
+                  </li>
+                  <li>
+                    <p class="mb-0">Punch In at</p>
+                    <p class="res-activity-time">
+                      <i class="fa-regular fa-clock"></i>
+                      11.15 AM.
+                    </p>
+                  </li>
+                  <li>
+                    <p class="mb-0">Punch Out at</p>
+                    <p class="res-activity-time">
+                      <i class="fa-regular fa-clock"></i>
+                      1.30 PM.
+                    </p>
+                  </li>
+                  <li>
+                    <p class="mb-0">Punch In at</p>
+                    <p class="res-activity-time">
+                      <i class="fa-regular fa-clock"></i>
+                      2.00 PM.
+                    </p>
+                  </li>
+                  <li>
+                    <p class="mb-0">Punch Out at</p>
+                    <p class="res-activity-time">
+                      <i class="fa-regular fa-clock"></i>
+                      7.30 PM.
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Attendance Modal -->

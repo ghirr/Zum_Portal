@@ -1,0 +1,28 @@
+.progress {
+    height:80px;
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+    color: white;
+    text-align: center;
+  }
+  
+  .approver-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .status {
+    font-size: 0.8rem;
+  }

@@ -1,0 +1,66 @@
+
+<div class="account-page">
+    <div class="main-wrapper">
+      <div class="account-content">
+        <div class="container">
+          <!-- Account Logo -->
+          <div class="account-logo">
+            <a href="javascript:void(0);"
+              ><img src="assets/img/zum_it_logo.png" alt="zum_it_logo"
+            /></a>
+          </div>
+          <!-- /Account Logo -->
+      
+          <div class="account-box">
+            <div class="account-wrapper">
+              <h3 class="account-title">Login</h3>
+              <p class="account-subtitle">Access to Zum_Portal</p>
+      
+              <!-- Account Form -->
+              <form [formGroup]="form" (ngSubmit)="submit()">
+                <div *ngIf="Error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <strong>Error!</strong> Please verify your credentials
+                </div>
+                <div class="input-block mb-3">
+                  <label class="col-form-label" for="email">Email</label>
+                  <input class="form-control" type="text" formControlName="email" autocomplete="email" id="email" [ngClass]="{'is-invalid': f['email'].touched && f['email'].invalid}"/>
+                  
+                  <div *ngIf="f['email'].touched && f['email'].invalid" class="text-danger">
+                      <div *ngIf="f['email'].errors && f['email'].errors['required']">Email is required.</div>
+                      <div *ngIf="f['email'].errors && f['email'].errors['email']">
+                          Please, enter valid email address.
+                      </div>
+                  </div>
+                </div>
+                <div class="input-block mb-3">
+                  <div class="row">
+                    <div class="col">
+                      <label class="col-form-label" for="password">Password</label>
+                    </div>
+                  </div>
+                    <div class="position-relative login-page">
+                      <input class="form-control" [type]="Toggledata ? 'password' : 'text'" formControlName="password" id="password" [ngClass]="{'is-invalid': f['password'].touched && f['password'].invalid}"/>
+                      <span class="pointer" [ngClass]="Toggledata === true ? 'fa toggle-password fa-eye-slash' : 'fa toggle-password fa-eye'" (click)="iconLogle()" (keydown.enter)="iconLogle()" tabindex="0"></span>
+                  </div>
+                  <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger">
+                      <div *ngIf="f['password'].errors && f['password'].errors['required']">
+                      Password is required.
+                      </div>
+                  </div>
+                </div>
+                <div class="input-block mb-3 text-center">
+                  <button class="btn btn-primary account-btn2" [disabled]="form.invalid" type="submit">Login</button>
+                </div>
+                <div class="account-footer">
+                  <p>Click to reset your password <a [routerLink]="routes.forgot_password1">Forgot password?</a></p>
+                </div>
+              </form>
+              <!-- /Account Form -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    

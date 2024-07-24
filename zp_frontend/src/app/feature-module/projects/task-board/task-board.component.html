@@ -1,0 +1,693 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title">{{Project}}</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/dashboard/admin'">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Task Board</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="row board-view-header">
+        <div class="col-4">
+            <div class="pro-teams">
+                <div class="pro-team-lead">
+                    <h4>Lead</h4>
+                    <div class="avatar-group">
+                        <div class="avatar">
+                            <img class="avatar-img rounded-circle border border-white" alt="Project Manger Image"
+                                [src]="projectManager?.profile_photo||image">
+                        </div>
+                        <div class="avatar">
+                            <img class="avatar-img rounded-circle border border-white" alt="Scrum Master Image"
+                                [src]="scrumMaster?.profile_photo||image">
+                        </div>
+                    </div>
+                </div>
+                <div class="pro-team-members">
+                    <h4>Team</h4>
+                    <div class="avatar-group">
+                        <div class="avatar" *ngFor="let tm of lstTeamMembers">
+                            <img class="avatar-img rounded-circle border border-white" alt="User Image"
+                                [src]="tm?.profile_photo||image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-8 text-end">
+            <a *ngIf="permissions.includes('add_task')" class="btn btn-white float-end ms-2" data-bs-toggle="modal" data-bs-target="#add_task_modal"><i
+                    class="fa-solid fa-plus"></i>Add New Task</a>
+            <!-- <a [routerLink]="'/projects/project-view'" class="btn btn-white float-end" title="View Board"><i
+                    class="fa fa-link"></i></a> -->
+        </div>
+
+        <div class="col-12">
+            <div class="pro-progress">
+                <div class="pro-progress-bar">
+                    <h4>Progress</h4>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" [style]="'width:'+projectProgress+'%'"></div>
+                    </div>
+                    <span>{{ projectProgress | number:'1.2' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="kanban-board card mb-0">
+        <div class="card-body">
+            <div class="kanban-cont">
+
+                <div class="kanban-list kanban-info" >
+                    <div class="kanban-header">
+                        <span class="status-title">To DO</span>
+                        <!-- <div class="dropdown kanban-action">
+                            <a href="" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#edit_task_board">Edit</a>
+                                <a class="dropdown-item">Delete</a>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="kanban-wrap" cdkDropList #progressList="cdkDropList" [cdkDropListData]="lstToDO"
+                        [cdkDropListConnectedTo]="[InprogressList,pendingList,reviewList,completedList,progressList]" (cdkDropListDropped)="onDrop($event,'ToDo')">
+                        <div class="card panel" *ngFor="let item of lstToDO" cdkDrag [cdkDragData]="item">
+                            <div class="kanban-box">
+                                <div class="task-board-header">
+                                    <span class="status-title"><a href="javascript:void(0);">{{item.name}}</a></span>
+                                    <div class="dropdown kanban-task-action">
+                                        <a href="" data-bs-toggle="dropdown">
+                                            <i class="fa-solid fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" *ngIf="permissions.includes('change_task') || permissions.includes('delete_task')">
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('change_task')"
+                                                data-bs-target="#edit_task_modal" (click)="ngOnchange(item)">Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('delete_task')"
+                                            data-bs-target="#delete_task" (click)="ngOnchange(item)">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-board-body">
+                                    <div class="kanban-info">
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="0"
+                                                aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>0%</span>
+                                    </div>
+                                    <div class="kanban-footer">
+                                        <span class="task-info-cont">
+                                            <span class="task-date"><i
+                                                    class="fa-regular fa-clock me-1"></i>{{item.enddate}}</span>
+                                            <span class="task-priority badge" [ngClass]="{
+                                                    'bg-inverse-warning': item.priority === 'Medium',
+                                                    'bg-inverse-success': item.priority === 'High',
+                                                    'bg-inverse-danger': item.priority === 'Low'
+                                                }">
+                                                {{ item.priority }}
+                                            </span>
+                                        </span>
+                                        <span class="task-users">
+                                            <img [src]="item.affectedTo.profile_photo||image" class="task-avatar" width="24"
+                                                height="24" alt="User's Profile Picture">
+                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.lstToDO.length==0" class="text-center">No Tasks Yet</div>
+                    <!-- <div class="add-new-task">
+                        <a data-bs-toggle="modal" data-bs-target="#add_task_modal">Add New Task</a>
+                    </div> -->
+                </div>
+                <div class="kanban-list kanban-warning">
+                    <div class="kanban-header">
+                        <span class="status-title">Inprogress</span>
+                        <!-- <div class="dropdown kanban-action">
+                            <a href="" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item">Edit</a>
+                                <a class="dropdown-item">Delete</a>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="kanban-wrap" cdkDropList #InprogressList="cdkDropList" [cdkDropListData]="lstInprogress"
+                        [cdkDropListConnectedTo]="[completedList,holdList,progressList,reviewList,pendingList]"
+                        (cdkDropListDropped)="onDrop($event,'InProgress')">
+                        <div class="card panel" *ngFor="let data of lstInprogress" cdkDrag [cdkDragData]="data">
+                            <div class="kanban-box">
+                                <div class="task-board-header">
+                                    <span class="status-title"><a href="javascript:void(0);">{{data.name}}</a></span>
+                                    <div class="dropdown kanban-task-action">
+                                        <a href="" data-bs-toggle="dropdown">
+                                            <i class="fa-solid fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" *ngIf="permissions.includes('change_task') || permissions.includes('delete_task')">
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('change_task')"
+                                                data-bs-target="#edit_task_modal" (click)="ngOnchange(data)">Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('delete_task')"
+                                            data-bs-target="#delete_task" (click)="ngOnchange(data)">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-board-body">
+                                    <div class="kanban-info">
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar" role="progressbar" style="width: 50%"
+                                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>50%</span>
+                                    </div>
+                                    <div class="kanban-footer">
+                                        <span class="task-info-cont">
+                                            <span class="task-date"><i
+                                                    class="fa-regular fa-clock  me-1"></i>{{data.enddate}}</span>
+                                            <span class="task-priority badge" [ngClass]="{
+                                                'bg-inverse-warning': data.priority === 'Medium',
+                                                'bg-inverse-success': data.priority === 'High',
+                                                'bg-inverse-danger': data.priority === 'Low'
+                                              }">
+                                                {{ data.priority }}
+                                            </span>
+                                        </span>
+                                        <span class="task-users">
+                                            <img [src]="data.affectedTo.profile_photo||image" class="task-avatar" width="24"
+                                                height="24" alt="User's Profile Picture">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.lstInprogress.length==0" class="text-center">No Tasks Yet</div>
+                    <!-- <div class="add-new-task">
+                        <a data-bs-toggle="modal" data-bs-target="#add_task_modal">Add New Task</a>
+                    </div> -->
+                </div>
+                <div class="kanban-list kanban-primary">
+                    <div class="kanban-header">
+                        <span class="status-title">Review</span>
+                        <!-- <div class="dropdown kanban-action">
+                            <a href="" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#edit_task_board">Edit</a>
+                                <a class="dropdown-item">Delete</a>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="kanban-wrap" cdkDropList #reviewList="cdkDropList" [cdkDropListData]="lstReview"
+                        [cdkDropListConnectedTo]="[progressList,completedList,InprogressList,holdList,pendingList]"
+                        (cdkDropListDropped)="onDrop($event,'Review')">
+                        <div class="card panel" *ngFor="let review of lstReview" cdkDrag [cdkDragData]="review">
+                            <div class="kanban-box">
+                                <div class="task-board-header">
+                                    <span class="status-title"><a href="javascript:void(0);">{{review.name}}</a></span>
+                                    <div class="dropdown kanban-task-action">
+                                        <a href="" data-bs-toggle="dropdown">
+                                            <i class="fa-solid fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" *ngIf="permissions.includes('change_task') || permissions.includes('delete_task')">
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('change_task')"
+                                                data-bs-target="#edit_task_modal" (click)="ngOnchange(review)">Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('delete_task')"
+                                            data-bs-target="#delete_task" (click)="ngOnchange(review)">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-board-body">
+                                    <div class="kanban-info">
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar" role="progressbar" style="width: 70%"
+                                                aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>70%</span>
+                                    </div>
+                                    <div class="kanban-footer">
+                                        <span class="task-info-cont">
+                                            <span class="task-date"><i
+                                                    class="fa-regular fa-clock me-1"></i>{{review.enddate}}</span>
+                                            <span class="task-priority badge" [ngClass]="{
+                                                        'bg-inverse-warning': review.priority === 'Medium',
+                                                        'bg-inverse-success': review.priority === 'High',
+                                                        'bg-inverse-danger': review.priority === 'Low'
+                                                      }">
+                                                {{ review.priority }}
+                                            </span>
+                                        </span>
+                                        <span class="task-users">
+                                            <img [src]="review.affectedTo.profile_photo||image" class="task-avatar" width="24"
+                                                height="24" alt="User's Profile Picture">
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.lstReview.length==0" class="text-center">No Tasks Yet</div>
+                    <!-- <div class="add-new-task">
+                        <a data-bs-toggle="modal" data-bs-target="#add_task_modal">Add New Task</a>
+                    </div> -->
+                </div>
+                <div class="kanban-list kanban-success">
+                    <div class="kanban-header">
+                        <span class="status-title">Completed</span>
+                        <!-- <div class="dropdown kanban-action">
+                            <a href="" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#edit_task_board">Edit</a>
+                                <a class="dropdown-item">Delete</a>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="kanban-wrap" cdkDropList #completedList="cdkDropList" [cdkDropListData]="lstCompleted"
+                        [cdkDropListConnectedTo]="[progressList,InprogressList,holdList,reviewList,pendingList]"
+                        (cdkDropListDropped)="onDrop($event,'Completed')">
+                        <div class="card panel" *ngFor="let completed of lstCompleted" cdkDrag [cdkDragData]="completed">
+                            <div class="kanban-box">
+                                <div class="task-board-header">
+                                    <span class="status-title"><a
+                                            href="javascript:void(0);">{{completed.name}}</a></span>
+                                    <div class="dropdown kanban-task-action">
+                                        <a href="" data-bs-toggle="dropdown">
+                                            <i class="fa-solid fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" *ngIf="permissions.includes('change_task') || permissions.includes('delete_task')">
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('change_task')"
+                                                data-bs-target="#edit_task_modal" (click)="ngOnchange(completed)">Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('delete_task')"
+                                            data-bs-target="#delete_task" (click)="ngOnchange(completed)">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-board-body">
+                                    <div class="kanban-info">
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar" role="progressbar" style="width: 100%"
+                                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>100%</span>
+                                    </div>
+                                    <div class="kanban-footer">
+                                        <span class="task-info-cont">
+                                            <span class="task-date"><i
+                                                    class="fa-regular fa-clock me-1"></i>{{completed.enddate}}</span>
+                                            <span class="task-priority badge" [ngClass]="{
+                                                        'bg-inverse-warning': completed.priority === 'Medium',
+                                                        'bg-inverse-success': completed.priority === 'High',
+                                                        'bg-inverse-danger': completed.priority === 'Low'
+                                                      }">
+                                                {{ completed.priority}}
+                                            </span>
+                                        </span>
+                                        <span class="task-users">
+                                            <img [src]="completed.affectedTo.profile_photo||image" class="task-avatar"
+                                                width="24" height="24" alt="User's Profile Picture">
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.lstCompleted.length==0" class="text-center">No Tasks Yet</div>
+                    <!-- <div class="add-new-task">
+                        <a data-bs-toggle="modal" data-bs-target="#add_task_modal">Add New Task</a>
+                    </div> -->
+                </div>
+                <div class="kanban-list kanban-purple">
+                    <div class="kanban-header">
+                        <span class="status-title">On Hold</span>
+                        <!-- <div class="dropdown kanban-action">
+                            <a href="" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#edit_task_board">Edit</a>
+                                <a class="dropdown-item">Delete</a>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="kanban-wrap" cdkDropList #holdList="cdkDropList" [cdkDropListData]="lstHold"
+                        [cdkDropListConnectedTo]="[completedList,InprogressList,reviewList,pendingList,progressList]"
+                        (cdkDropListDropped)="onDrop($event,'OnHold')">
+                        <div class="card panel" *ngFor="let itm of lstHold" cdkDrag [cdkDragData]="itm">
+                            <div class="kanban-box">
+                                <div class="task-board-header">
+                                    <span class="status-title"><a href="javascript:void(0);">{{itm.name}}</a></span>
+                                    <div class="dropdown kanban-task-action">
+                                        <a href="" data-bs-toggle="dropdown">
+                                            <i class="fa-solid fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" *ngIf="permissions.includes('change_task') || permissions.includes('delete_task')">
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('change_task')"
+                                                data-bs-target="#edit_task_modal" (click)="ngOnchange(itm)">Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('delete_task')"
+                                            data-bs-target="#delete_task" (click)="ngOnchange(itm)">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-board-body">
+                                    <div class="kanban-info">
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar" role="progressbar" style="width: 50%"
+                                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>50%</span>
+                                    </div>
+                                    <div class="kanban-footer">
+                                        <span class="task-info-cont">
+                                            <span class="task-date"><i
+                                                    class="fa-regular fa-clock me-1"></i>{{itm.enddate}}</span>
+                                            <span class="task-priority badge" [ngClass]="{
+                                                'bg-inverse-warning': itm.priority === 'Medium',
+                                                'bg-inverse-success': itm.priority === 'High',
+                                                'bg-inverse-danger': itm.priority === 'Low'
+                                              }">
+                                                {{ itm.priority }}
+                                            </span>
+                                        </span>
+                                        <span class="task-users">
+                                            <img [src]="itm.affectedTo.profile_photo||image" class="task-avatar" width="24"
+                                                height="24" alt="User's Profile Picture">
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.lstHold.length==0" class="text-center">No Tasks Yet</div>
+                    <!-- <div class="add-new-task">
+                        <a data-bs-toggle="modal" data-bs-target="#add_task_modal">Add New Task</a>
+                    </div> -->
+                </div>
+                <div class="kanban-list kanban-danger">
+                    <div class="kanban-header">
+                        <span class="status-title">Canceled</span>
+                        <!-- <div class="dropdown kanban-action">
+                            <a href="" data-bs-toggle="dropdown">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#edit_task_board">Edit</a>
+                                <a class="dropdown-item">Delete</a>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="kanban-wrap" cdkDropList #pendingList="cdkDropList" [cdkDropListData]="lstCanceled"
+                        [cdkDropListConnectedTo]="[progressList,InprogressList,completedList,holdList,reviewList]"
+                        (cdkDropListDropped)="onDrop($event,'Canceled')">
+                        <div class="card panel" *ngFor="let task of lstCanceled " cdkDrag [cdkDragData]="task">
+                            <div class="kanban-box">
+                                <div class="task-board-header">
+                                    <span class="status-title"><a href="javascript:void(0);">{{task.name}}</a></span>
+                                    <div class="dropdown kanban-task-action">
+                                        <a href="" data-bs-toggle="dropdown">
+                                            <i class="fa-solid fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" *ngIf="permissions.includes('change_task') || permissions.includes('delete_task')">
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('change_task')"
+                                                data-bs-target="#edit_task_modal" (click)="ngOnchange(task)">Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" *ngIf="permissions.includes('delete_task')"
+                                            data-bs-target="#delete_task" (click)="ngOnchange(task)">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-board-body">
+                                    <div class="kanban-info">
+                                        <div class="progress progress-xs">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="0"
+                                                aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>0%</span>
+                                    </div>
+                                    <div class="kanban-footer">
+                                        <span class="task-info-cont">
+                                            <span class="task-date"><i
+                                                    class="fa-regular fa-clock me-1"></i>{{task.enddate}}</span>
+                                            <span class="task-priority badge" [ngClass]="{
+                                                'bg-inverse-warning': task.priority === 'Medium',
+                                                'bg-inverse-success': task.priority === 'High',
+                                                'bg-inverse-danger': task.priority === 'Low'
+                                              }">
+                                                {{ task.priority }}
+                                            </span>
+                                        </span>
+                                        <span class="task-users">
+                                            <img [src]="task.affectedTo.profile_photo||image" class="task-avatar" width="24"
+                                                height="24" alt="User's Profile Picture">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="this.lstCanceled.length==0" class="text-center">No Tasks Yet</div>
+                    <!-- <div class="add-new-task">
+                        <a data-bs-toggle="modal" data-bs-target="#add_task_modal">Add New Task</a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /Page Content -->
+
+
+<!-- Add Task Modal -->
+<div id="add_task_modal" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Task</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addTaskForm">
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Task Name</label>
+                        <input type="text" class="form-control" formControlName="name"
+                        [ngClass]="{ 'is-invalid': submitted && f['name'].errors ,
+                                'is-valid':submitted && f['name'].valid}">
+                                <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['name'].errors">
+                                        Name is Required
+                                    </div>
+                                </div>
+                                <div *ngIf="submitted && f['name'].valid" class="valid-feedback">Looks good!</div>
+
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Task Priority</label>
+                        <mat-select class="form-control" formControlName="priority">
+                            <mat-option value="High">High</mat-option>
+                            <mat-option value="Medium">Medium</mat-option>
+                            <mat-option value="Low">Low</mat-option>
+                        </mat-select>
+                    </div>
+                    <div class="input-block mb-3 date-input1">
+                        <label class="col-form-label" for="">Start Date</label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text" bsDatepicker container=".date-input1"
+                                type="text" formControlName="startdate" [maxDate]="addTaskForm.value.enddate" 
+                                [ngClass]="{ 'is-invalid': submitted && f['startdate'].errors ,
+                                'is-valid':submitted && f['startdate'].valid}">
+                                <div *ngIf="submitted && f['startdate'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['startdate'].errors">
+                                        Invalid Date
+                                    </div>
+                                </div>
+                                <div *ngIf="submitted && f['startdate'].valid" class="valid-feedback">Looks good!</div>
+                        </div>
+                    </div>
+                    <div class="input-block mb-3 date-input1">
+                        <label class="col-form-label" for="">Due Date</label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text" bsDatepicker container=".date-input1" [minDate]="addTaskForm.value.startdate"
+                                type="text" formControlName="enddate" [ngClass]="{ 'is-invalid': submitted && f['enddate'].errors ,
+                            'is-valid':submitted && f['enddate'].valid}">
+                            <div *ngIf="submitted && f['enddate'].errors" class="invalid-feedback">
+                                <div *ngIf="f['enddate'].errors">
+                                    Invalid Date
+                                </div>
+                            </div>
+                            <div *ngIf="submitted && f['enddate'].valid" class="valid-feedback">Looks
+                                good!</div>
+                        </div>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Affect To</label>
+                        <mat-form-field>
+                            <mat-select class="select mat-cust-select" formControlName="affectedTo">
+                                <mat-option *ngFor="let affected of lstTeamMembers" [value]="affected?.id">
+                                    <span><img class="avatar" [src]="affected.profile_photo||image" />{{ affected.firstname }}
+                                        {{
+                                        affected.lastname }} </span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Project Description</label>
+                        <textarea rows="4" class="form-control summernote" formControlName="description" [ngClass]="{ 'is-invalid': submitted && f['description'].errors ,
+                            'is-valid':submitted && f['description'].valid}"></textarea>
+                        <div *ngIf="submitted && f['description'].errors" class="invalid-feedback">
+                            <div *ngIf="f['description'].errors">
+                                Description is required
+                            </div>
+                        </div>
+                        <div *ngIf="submitted && f['description'].valid" class="valid-feedback">Looks
+                            good!</div>
+                    </div>
+                    <div class="submit-section text-center">
+                        <button class="btn btn-primary submit-btn" type="button" (click)="addTask()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Task Modal -->
+
+<!-- Edit Task Modal -->
+<div id="edit_task_modal" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Task</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="editTaskForm">
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Task Name</label>
+                        <input type="text" class="form-control" formControlName="name"
+                        [ngClass]="{ 'is-invalid': submitted && g['name'].errors ,
+                                'is-valid':submitted && g['name'].valid}">
+                                <div *ngIf="submitted && g['name'].errors" class="invalid-feedback">
+                                    <div *ngIf="g['name'].errors">
+                                        Name is Required
+                                    </div>
+                                </div>
+                                <div *ngIf="submitted && g['name'].valid" class="valid-feedback">Looks good!</div>
+
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Task Priority</label>
+                        <mat-select class="form-control" formControlName="priority">
+                            <mat-option value="High">High</mat-option>
+                            <mat-option value="Medium">Medium</mat-option>
+                            <mat-option value="Low">Low</mat-option>
+                        </mat-select>
+                    </div>
+                    <div class="input-block mb-3 date-input3">
+                        <label class="col-form-label" for="">Start Date</label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text" bsDatepicker container=".date-input3"
+                                type="text" formControlName="startdate" [maxDate]="editTaskForm.value.enddate" 
+                                [ngClass]="{ 'is-invalid': submitted && g['startdate'].errors ,
+                                'is-valid':submitted && g['startdate'].valid}">
+                                <div *ngIf="submitted && g['startdate'].errors" class="invalid-feedback">
+                                    <div *ngIf="g['startdate'].errors">
+                                        Invalid Date
+                                    </div>
+                                </div>
+                                <div *ngIf="submitted && g['startdate'].valid" class="valid-feedback">Looks good!</div>
+                        </div>
+                    </div>
+                    <div class="input-block mb-3 date-input4">
+                        <label class="col-form-label" for="">Due Date</label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text" bsDatepicker container=".date-input4" [minDate]="editTaskForm.value.startdate"
+                                type="text" formControlName="enddate" [ngClass]="{ 'is-invalid': submitted && g['enddate'].errors ,
+                            'is-valid':submitted && g['enddate'].valid}">
+                            <div *ngIf="submitted && g['enddate'].errors" class="invalid-feedback">
+                                <div *ngIf="g['enddate'].errors">
+                                    Invalid Date
+                                </div>
+                            </div>
+                            <div *ngIf="submitted && g['enddate'].valid" class="valid-feedback">Looks
+                                good!</div>
+                        </div>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Affect To</label>
+                        <mat-form-field>
+                            <mat-select class="select mat-cust-select" formControlName="affectedTo">
+                                <mat-option *ngFor="let affected of lstTeamMembers" [value]="affected?.id">
+                                    <span><img class="avatar" [src]="affected.profile_photo||image" />{{ affected.firstname }}
+                                        {{
+                                        affected.lastname }} </span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Project Description</label>
+                        <textarea rows="4" class="form-control summernote" formControlName="description" [ngClass]="{ 'is-invalid': submitted && g['description'].errors ,
+                            'is-valid':submitted && g['description'].valid}"></textarea>
+                        <div *ngIf="submitted && g['description'].errors" class="invalid-feedback">
+                            <div *ngIf="g['description'].errors">
+                                Description is required
+                            </div>
+                        </div>
+                        <div *ngIf="submitted && g['description'].valid" class="valid-feedback">Looks
+                            good!</div>
+                    </div>
+                    <div class="submit-section text-center">
+                        <button class="btn btn-primary submit-btn" type="button" (click)="editTask()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Task Modal -->
+<div class="modal custom-modal fade" id="delete_task" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Task</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-primary continue-btn" (click)="deleteTask()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

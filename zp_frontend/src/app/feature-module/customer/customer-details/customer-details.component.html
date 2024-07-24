@@ -1,0 +1,302 @@
+<!-- Page Content -->
+<app-customers-modal [customerData]="customer" (formSubmitted)="handleFormSubmission()"></app-customers-modal>
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-title">Profile</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Profile</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="card mb-0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="profile-view">
+                        <div class="profile-img-wrap">
+                            <div class="profile-img">
+                                <a data-bs-toggle="modal" data-bs-target="#edit_client" *ngIf="this.permissions.includes('change_customer')">
+                                    <img (mouseenter)="onHover()" (mouseleave)="onLeave()" [src]="currentImage" alt="">
+                                </a>
+                                <a  *ngIf="!this.permissions.includes('change_customer')">
+                                    <img  [src]="currentImage" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="profile-basic">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="profile-info-left">
+                                        <h3 class="user-name m-t-0">{{customer?.name}}</h3>
+                                        <h5 class="company-role m-t-0 mb-0">Description</h5>
+                                        <div class="text-muted">{{customer?.description}}</div>
+                                        <!--<div class="staff-msg"><a [routerLink]="routes.chat" class="btn btn-custom">Send Message</a></div>-->
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <ul class="personal-info">
+                                        <li>
+                                            <span class="title">Phone:</span>
+                                            <span class="text"><a href="">{{customer?.tel}}</a></span>
+                                        </li>
+                                        <li>
+                                            <span class="title">Email:</span>
+                                            <span class="text"><a href="">{{customer?.email}}</a></span>
+                                        </li>
+                                        <li>
+                                            <span class="title">Joining Date:</span>
+                                            <span class="text">{{customer?.joining_Date}}</span>
+                                        </li>
+                                        <li>
+                                            <span class="title">Address:</span>
+                                            <span class="text">{{customer?.adress}}</span>
+                                        </li>
+                                        <!---- <li>
+                                            <span class="title">Gender:</span>
+                                            <span class="text">Male</span>
+                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card tab-box">
+        <div class="row user-tabs">
+            <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
+                <ul class="nav nav-tabs nav-tabs-bottom">
+                    <li class="nav-item col-sm-3"><a class="nav-link active" data-bs-toggle="tab"
+                            href="#myprojects">Projects</a></li>
+                    <!--00   <li class="nav-item col-sm-3"><a class="nav-link" data-bs-toggle="tab" href="#tasks">Tasks</a></li>-->
+                    <li class="nav-item col-sm-3"><a class="nav-link" data-bs-toggle="tab" href="#files">Files</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="tab-content profile-tab-content">
+
+                <!-- Projects Tab -->
+                <div id="myprojects" class="tab-pane fade show active">
+                    <div class="row">
+                        <div class="card" *ngIf="!(projects && projects.length > 0)">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-center">
+                                    <div class="p-5">
+                                        <div style="overflow-y: auto; max-height: 400px;overflow-x: hidden;">
+                                            <div id="feragh" style="display: flex; justify-content: space-around;">
+                                                <img src="assets/img/nodata.jpg" style="max-height: 200px;" />
+                                                <h1
+                                                    style="color: rgb(165, 159, 159);align-items: center;margin-top: 100px;">
+                                                    No Projects</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 col-md-4 col-xl-3" *ngFor="let project of projects">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="project-title"><a
+                                            [routerLink]="'/projects/project-view/'+ project.id">{{project?.name}}</a>
+                                    </h4>
+
+                                    <p class="text-muted">{{project?.description.slice(0,10)}} ...
+                                    </p>
+                                    <div class="pro-deadline m-b-15">
+                                        <div class="sub-title">
+                                            Deadline:
+                                        </div>
+                                        <div class="text-muted">
+                                            {{ project?.end_date | date: 'dd MMM, yyyy' }}
+                                        </div>
+                                    </div>
+                                    <div class="project-members m-b-15">
+                                        <div>Project Manager :</div>
+                                        <ul class="team-members">
+                                            <li>
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                    title="{{project.project_manager?.firstname}} {{project.project_manager?.lastname}}"><img
+                                                        src="{{project.project_manager?.profile_photo || image}}"
+                                                        alt="User Image"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="project-members m-b-15">
+                                        <div>Scrum Master :</div>
+                                        <ul class="team-members">
+                                            <li>
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                    title="{{project.scrum_master?.firstname}} {{project.scrum_master?.lastname}}"><img
+                                                        src="{{project.scrum_master?.profile_photo || image}}"
+                                                        alt="User Image"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="project-members m-b-15">
+                                        <div>Team :</div>
+                                        <ul class="team-members">
+                                            <li *ngFor="let team of project?.assigned_to.slice(0,3)">
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip"
+                                                    Mattooltip="John Doe" title="John Doe"><img
+                                                        src="{{team?.profile_photo}}" alt="User Image"></a>
+                                            </li>
+                                            <!---- <li>
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip"  Mattooltip="Richard Miles" title="Richard Miles"><img src="assets/img/profiles/avatar-09.jpg" alt="User Image"></a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip"  Mattooltip="John Smith" title="John Smith"><img src="assets/img/profiles/avatar-10.jpg" alt="User Image"></a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);" data-bs-toggle="tooltip" title="Mike Litorus"><img src="assets/img/profiles/avatar-05.jpg" alt="User Image"></a>
+                                            </li>-->
+                                            <li class="dropdown avatar-dropdown">
+                                                <a href="javascript:void(0);" class="all-users dropdown-toggle"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false">+{{project.assigned_to.length -3}}</a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <div class="avatar-group">
+                                                        <a class="avatar avatar-xs"
+                                                            *ngFor="let team of project?.assigned_to.slice(3)"
+                                                            href="javascript:void(0);">
+                                                            <img src="{{team.profile_photo}}" alt="User Image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="avatar-pagination">
+                                                        <ul class="pagination">
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="javascript:void(0);"
+                                                                    aria-label="Previous">
+                                                                    <span aria-hidden="true">«</span>
+                                                                    <span class="visually-hidden">Previous</span>
+                                                                </a>
+                                                            </li>
+                                                            <li class="page-item"><a class="page-link"
+                                                                    href="javascript:void(0);">1</a></li>
+                                                            <li class="page-item"><a class="page-link"
+                                                                    href="javascript:void(0);">2</a></li>
+                                                            <li class="page-item">
+                                                                <a class="page-link" href="javascript:void(0);"
+                                                                    aria-label="Next">
+                                                                    <span aria-hidden="true">»</span>
+                                                                    <span class="visually-hidden">Next</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div><br>
+                                    <p class="m-b-10">Progress <span
+                                            class="text-success float-end">{{project?.progress}}%</span></p>
+                                    <div class="progress progress-xs mb-0">
+                                        <div [class]="'progress-bar bg-success w-'+project?.progress" role="progressbar"
+                                            data-bs-toggle="tooltip"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/files tab-->
+                <div id="files" class="tab-pane fade">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title m-b-20">Uploaded files</h5>
+                                <button type="button" class="float-end btn btn-success btn-sm" data-bs-toggle="modal" *ngIf="this.permissions.includes('add_customer')"
+                                    data-bs-target="#add_files"><i class="fa-solid fa-plus"></i> Add</button>
+                            </div>
+                            <div class="p-5" *ngIf="!(files && files.length > 0)">
+                                <div style="overflow-y: auto; max-height: 400px;overflow-x: hidden;">
+                                    <div id="feragh" style="display: flex; justify-content: space-around;">
+                                        <img src="assets/img/nodata.jpg" style="max-height: 200px;" />
+                                        <h1 style="color: rgb(165, 159, 159);align-items: center;margin-top: 100px;">No
+                                            Files</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="files-list" *ngFor="let file of files">
+                                <li>
+                                    <div class="files-cont">
+                                        <div class="file-type">
+                                            <span class="files-icon"><i [class]="getFileIcon(file.file)"></i></span>
+                                        </div>
+                                        <div class="files-info">
+                                            <span class="file-name text-ellipsis"><a>{{ getFileName(file.file)
+                                                    }}</a></span>
+                                            <span class="file-author me-1"><a (click)="downloadFile(file.file)">{{
+                                                    file.file }}</a></span>
+                                            <!-- Add other file details here like author, date, size, etc. -->
+                                        </div>
+                                        <ul class="files-action" *ngIf="this.permissions.includes('change_customer') || this.permissions.includes('delete_customer')">
+                                            <li class="dropdown dropdown-action">
+                                                <a href="" class="dropdown-toggle btn btn-link"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="material-icons">more_horiz</i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item" *ngIf="this.permissions.includes('delete_customer')" (click)="passFile(file)" data-bs-toggle="modal"
+                                                    data-bs-target="#delete_file">
+                                                        <i class="fa-regular fa-trash-can m-r-5"></i>Delete</a>
+                                                    <!-- Add other file actions like Share and Delete -->
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+                </div>
+                <!--/files tab-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+
+<!-- Delete Client Modal -->
+<div class="modal custom-modal fade" id="delete_file" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete File</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a  class="btn btn-primary continue-btn"
+                            (click)="deleteFile()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a  data-bs-dismiss="modal"
+                                class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Client Modal -->

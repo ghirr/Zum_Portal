@@ -1,0 +1,77 @@
+<app-customers-modal [customerData]="selectedCustomer" (formSubmitted)="handleFormSubmission()"></app-customers-modal>
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Customers</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Customers</li>
+                </ul>
+            </div>
+            <div class="col-auto float-end ms-auto">
+                <a  class="btn add-btn"  *ngIf="this.permissions.includes('add_customer')" data-bs-toggle="modal" data-bs-target="#add_client" ><i
+                        class="fa-solid fa-plus"></i>Add Customer</a>
+                    <div class="view-icons">
+                        <a [routerLink]="'/customers/customer-page'" class="grid-view btn btn-link"
+                          ><i class="fa fa-th"></i
+                        ></a>
+                        <a
+                          [routerLink]="'/customers/customer-list'"
+                          class="list-view btn btn-link active"
+                          ><i class="fa-solid fa-bars"></i
+                        ></a>
+                      </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <!-- Search Filter -->
+    <div class="row filter-row">
+        <div class="col-sm-6 col-md-6">
+            <div class="input-block mb-3 form-focus inputs">
+              <mat-form-field class="example-full-width">
+                <mat-label>Customer</mat-label>
+                <input type="text" class="form-control" matInput (keyup)="searchData(searchCustomerName)" [(ngModel)]="searchCustomerName"/>
+              </mat-form-field>
+            </div>
+          </div>
+        <div class="col-sm-6 col-md-3">
+            <button class="btn btn-primary w-100" (click)="searchData(searchCustomerName)" > Search </button>
+        </div>
+    </div>
+    <!-- Search Filter -->
+
+    <div class="row staff-grid-row">
+        <div *ngFor="let data of clientsData; let i = index " class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+            <div class="profile-widget">
+                <div class="profile-img">
+                    <a [routerLink]="'/customers/customer-details/'+data.id" class="avatar"><img alt=""
+                            [src]="data.customer_photo"></a>
+                </div>
+                <div class="dropdown profile-action"  *ngIf="this.permissions.includes('change_customer') || this.permissions.includes('delete_customer')">
+                    <a  class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+                            class="material-icons">more_vert</i></a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" *ngIf="this.permissions.includes('change_customer')"  data-bs-toggle="modal" data-bs-target="#edit_client" 
+                        (click)="passCustomerData(data)"
+                            ><i class="fa-solid fa-pencil m-r-5"></i> Edit</a>
+                        <a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#delete_client"
+                        (click)="passCustomerData(data)" *ngIf="this.permissions.includes('delete_customer')"
+                            ><i class="fa-regular fa-trash-can m-r-5"></i> Delete</a>
+                    </div>
+                </div>
+                <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a
+                    [routerLink]="'/customers/customer-details/'+data.id">{{data.name}}</a>
+                </h4>
+                <div class="small text-muted">{{data.joining_Date}}</div>
+                <a [routerLink]="'/customers/customer-details/'+data.id" class="btn btn-white btn-sm m-t-10 ms-1">View Profile</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->

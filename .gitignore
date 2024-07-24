@@ -1,0 +1,6 @@
+# Ignore Angular cache files
+zp_frontend/.angular/cache/
+# Ignore Npde modules
+zp_frontend/node_modules/
+
+zumportal-backend/venv

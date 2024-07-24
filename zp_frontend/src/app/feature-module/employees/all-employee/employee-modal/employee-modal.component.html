@@ -1,0 +1,193 @@
+
+<!-- Add Employee Modal -->
+<div id="add_employee" class="modal custom-modal fade" role="dialog" (hidden.bs.modal)="resetForm()">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetForm()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addEmployeeForm">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showErrorAlert">
+                        <strong>Error:</strong> An error occurred while adding the user, {{ errorMessage }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">First Name</label>
+                                <input class="form-control" type="text" appPreventLeadingSpace
+                                [ngClass]="{ 'is-invalid': submitted && f['firstname'].errors,
+                                'is-valid': !submitted && f['firstname'].valid }"
+                                    formControlName="firstname">
+                                <div *ngIf="submitted && f['firstname']" class="invalid-feedback">
+                                    <div *ngIf="f['firstname'].errors && f['firstname'].errors['required']">First Name is required</div>
+                                </div>
+                                <div *ngIf="!submitted && f['firstname'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Last Name</label>
+                                <input class="form-control" type="text" appPreventLeadingSpace
+                                [ngClass]="{ 'is-invalid':submitted && f['lastname'].errors,
+                                'is-valid': !submitted && f['lastname'].valid }"
+                                    formControlName="lastname">
+                                    <div *ngIf="submitted && f['lastname']" class="invalid-feedback">
+                                        <div *ngIf="f['lastname'].errors && f['lastname'].errors['required']">Last Name is required</div>
+                                    </div>
+                                    <div *ngIf="!submitted && f['lastname'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label " for="">Email</label>
+                                <div class="col-lg-14">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"
+                                        aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                        formControlName="email" readonly>
+
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Role</label>
+                                <mat-select class="select mat-cust-select form-control"
+                                [ngClass]="{ 'is-invalid': submitted && f['role'].errors}"
+                                    formControlName="role" placeholder="Select Role">
+                                    <mat-option *ngFor="let role of roles" [value]="role.name">{{ role.name
+                                        }}</mat-option>
+                                </mat-select>
+                                <div *ngIf="submitted && f['role']" class="invalid-feedback">
+                                    <div *ngIf="f['role'].errors && f['role'].errors['required']">Role is required</div>
+                                </div>
+                                <div *ngIf="!submitted && f['role'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" type="button" (click)="addNewUser()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Employee Modal -->
+
+<!-- Edit Employee Modal -->
+<div id="edit_employee" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form  [formGroup]="editEmployeeForm">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">First Name <span
+                                        class="text-danger">*</span></label>
+                                <input class="form-control" type="text"
+                                    [class.invalid]="editEmployeeForm.get('firstname')?.invalid && editEmployeeForm.get('firstname')?.touched"
+                                    formControlName="firstname" readonly>
+                                <div
+                                    *ngIf="editEmployeeForm.get('firstname')?.invalid && editEmployeeForm.get('firstname')?.touched">
+                                    <small
+                                        *ngIf="editEmployeeForm.get('firstname')?.invalid && editEmployeeForm.get('firstname')?.touched"
+                                        class="text-danger"> *Firstname is required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Last Name</label>
+                                <input class="form-control" type="text"
+                                    [class.invalid]="editEmployeeForm.get('lastname')?.invalid && editEmployeeForm.get('lastname')?.touched"
+                                    formControlName="lastname" readonly>
+                                <div
+                                    *ngIf="editEmployeeForm.get('lastname')?.invalid && editEmployeeForm.get('lastname')?.touched">
+                                    <small
+                                        *ngIf="editEmployeeForm.get('lastname')?.invalid && editEmployeeForm.get('lastname')?.touched"
+                                        class="text-danger"> *Lastname is required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                    <label class="col-form-label" for="">Email</label>
+                                    <input class="form-control" type="text"
+                                        [class.invalid]="editEmployeeForm.get('email')?.invalid && editEmployeeForm.get('email')?.touched"
+                                        formControlName="email" readonly>
+                                    <div
+                                        *ngIf="editEmployeeForm.get('email')?.invalid && editEmployeeForm.get('email')?.touched">
+                                        <small
+                                            *ngIf="editEmployeeForm.get('email')?.invalid && editEmployeeForm.get('email')?.touched"
+                                            class="invalid-feedback"> *Lastname is required</small>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Role <span class="text-danger">*</span></label>
+                                <mat-select class="select mat-cust-select form-control"
+                                    [class.invalid]="addEmployeeForm.get('role')?.invalid && addEmployeeForm.get('role')?.touched"
+                                    formControlName="role" placeholder="Select Role">
+                                    <mat-option *ngFor="let role of roles" [value]="role.name">{{ role.name
+                                        }}</mat-option>
+                                </mat-select>
+                                <div
+                                    *ngIf="editEmployeeForm.get('role')?.invalid && editEmployeeForm.get('role')?.touched">
+                                    <small
+                                        *ngIf="editEmployeeForm.get('role')?.invalid && editEmployeeForm.get('role')?.touched"
+                                        class="text-danger"> *Role is required</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" type="button" (click)="editUser()" >Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Employee Modal -->
+
+<!-- Delete Employee Modal -->
+<div class="modal custom-modal fade" id="delete_employee" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Employee</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-primary continue-btn" (click)="deleteUser()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Employee Modal -->

@@ -1,0 +1,123 @@
+.team-members {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    /* Ensure the container can grow to accommodate all images */
+    flex-grow: 1;
+  }
+  
+  .team-members li {
+    flex: 0 0 auto; /* Do not grow, do not shrink, and base size on content */
+    margin-right: 10px;
+  }
+  .user-info {
+    flex: 1; /* Allow user info to take remaining space */
+  }
+  
+  .avatar-and-button {
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Align items vertically */
+  }
+  /* Hide the default checkbox */
+  input[type="checkbox"] {
+    display: none;
+  }
+  
+  /* Style the custom checkbox */
+  .checkmark {
+    position: relative;
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-color: #eee;
+  }
+  
+  /* Create the checkmark icon */
+  .checkmark::after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the checkmark icon when the checkbox is checked */
+  input[type="checkbox"]:checked + .checkmark::after {
+    display: block;
+  }
+  
+  /* Style the checkmark icon */
+  .checkmark::after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  input[type="checkbox"]:checked + .checkmark {
+    background-color: #2196F3;
+  }
+  
+  .member-container {
+    display: flex;
+    align-items: center; /* Align items vertically */
+    margin-bottom: 10px; /* Add space between each member */
+  
+  }
+  
+  .member-container .btn {
+    margin-left: 10px; /* Adjust as needed */
+  }
+  .asset-list {
+    display: flex; /* Use flexbox to make assets appear side by side */
+    flex-wrap: wrap; /* Allow wrapping of asset items */
+    justify-content: flex-start; /* Align assets to the left */
+}
+
+.asset-item {
+    display: flex; /* Use flexbox for asset item layout */
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center items horizontally */
+    margin-right: 20px; /* Add spacing between asset items */
+    margin-bottom: 20px; /* Add spacing between rows */
+    width: calc(25% - 20px); /* Each item takes up 25% of the container minus margin */
+}
+
+.avatar-circle {
+    width: 80px; /* Set width and height of the circle */
+    height: 80px;
+    border-radius: 50%; /* Make it a circle */
+    overflow: hidden; /* Hide overflowing content */
+    margin-bottom: 10px; /* Add spacing between circle and details */
+}
+
+.avatar-circle img {
+  width: 50%; /* Make the image fill the circle */
+  height: auto; /* Auto height to maintain aspect ratio */
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-top: 20px;
+  object-fit: contain; /* Fit the entire image inside the circle */
+}
+
+.asset-details {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center items horizontally */
+    width: 100%; /* Full width */
+}
+
+.asset-type {
+    margin-bottom: 5px; /* Add spacing between type and checkbox */
+    font-size: 16px; /* Increase font size */
+}
+
+input[type="checkbox"] {
+    margin-top: 5px; /* Add spacing above checkbox */
+}
+
+/* Rest of your CSS styles */
+.asset-image {
+  width: 50px; /* Adjust the width as needed */
+  height: auto; /* Maintain aspect ratio */
+}

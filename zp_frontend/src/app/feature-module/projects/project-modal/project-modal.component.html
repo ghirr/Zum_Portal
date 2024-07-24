@@ -1,0 +1,358 @@
+<!-- Create Project Modal -->
+<div id="create_project" class="modal custom-modal fade" role="dialog" (hidden.bs.modal)="onReset()">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <!-- /Alerts -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="onReset()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addProjectForm">
+
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showErrorAlert">
+                        <strong>Error:</strong> An error occurred while adding the project, {{ errorMessage }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Project Name</label>
+                                <input class="form-control" type="text" formControlName="name"
+                                    [ngClass]="{ 'is-invalid': submitted && f['name'].errors,'is-valid':submitted && f['name'].valid}"
+                                    required>
+                                <div *ngIf="submitted && f['name']" class="invalid-feedback">
+                                    <div *ngIf="f['name'].errors && f['name'].errors['required']">Name is required</div>
+                                </div>
+                                <div *ngIf="submitted && f['name'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Project Abbreviation</label>
+                                <input class="form-control" type="text" formControlName="abbreviation" [ngClass]="{ 'is-invalid': submitted && f['abbreviation'].errors ,
+                                    'is-valid':submitted && f['abbreviation'].valid} " required>
+                                <div *ngIf="submitted && f['abbreviation']" class="invalid-feedback">
+                                    <div *ngIf="f['abbreviation'].errors && f['abbreviation'].errors['required']">
+                                        Abbreviation is required</div>
+                                </div>
+                                <div *ngIf="submitted && f['abbreviation'].valid" class="valid-feedback">Looks good!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Manager</label>
+                                <mat-form-field>
+                                    <mat-select class="select mat-cust-select" formControlName="manager">
+                                        <mat-option *ngFor="let m of filteredManagers" [value]="m">
+                                            <span><img class="avatar" [src]="m.profile_photo || image" /> {{ m.firstname
+                                                }} {{ m.lastname }}</span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Customer</label>
+                                <mat-form-field>
+                                    <mat-select class="select mat-cust-select" formControlName="customer">
+                                        <mat-option *ngFor="let c of filteredCustomers" [value]="c">
+                                            <span><img class="avatar" [src]="c.customer_photo" />{{ c.name }} </span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                            <label class="col-form-label" for="teamMemberInput">Project Team</label>
+                            <mat-form-field>
+                                <mat-select panelClass="multiple-mat" class="select mat-cust-select"
+                                    formControlName="assignedToControl" multiple>
+                                    <mat-option *ngFor="let tm of filteredTeamMembers" [value]="tm">
+                                        <span><img class="avatar" [src]="tm.profile_photo || image" /> {{
+                                            tm.firstname }} {{ tm.lastname }}</span>
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="submitted && f['assignedToControl'].errors" class="is-invalid">
+                                    <ng-container
+                                        *ngIf="f['assignedToControl'].errors && f['assignedToControl'].errors['required']">Team
+                                        Members is required</ng-container>
+                                </mat-error>
+                            </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label">Scrum Master</label>
+                                <mat-form-field>
+                                    <mat-select class="select mat-cust-select" formControlName="scrum">
+                                        <mat-option *ngFor="let c of filtredScrumMasters" [value]="c">
+                                            <span><img class="avatar" [src]="c.profile_photo" />{{ c.firstname }} {{
+                                                c.lastname }} </span>
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Previous form fields -->
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3 date-input1">
+                                <label class="col-form-label" for="starter_at">Starter Date</label>
+
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" bsDatepicker container=".date-input1"
+                                        id="starter_at" type="text" formControlName="starter_at" [ngClass]="{ 'is-invalid': submitted && f['starter_at'].errors,
+                                        'is-valid':submitted && f['starter_at'].valid }"
+                                        [maxDate]="this.addProjectForm.value.end_date">
+
+                                    <!-- <mat-datepicker-toggle matSuffix [for]="starterDatePickerForAdd"></mat-datepicker-toggle> -->
+                                    <mat-datepicker #starterDatePickerForAdd></mat-datepicker>
+                                    <div *ngIf="submitted && f['starter_at'].errors" class="invalid-feedback">
+                                        <div *ngIf="f['starter_at'].errors">
+                                            Invalid Date
+                                        </div>
+                                    </div>
+                                    <div *ngIf="submitted && f['starter_at'].valid" class="valid-feedback">Looks
+                                        good!</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3 date-input2">
+                                <label class="col-form-label" for="end_date">End Date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" bsDatepicker container=".date-input2"
+                                        type="text" formControlName="end_date"
+                                        [minDate]="addProjectForm.value.starter_at" [ngClass]="{ 'is-invalid': submitted && f['end_date'].errors,
+                                    'is-valid': submitted && f['end_date'].valid }">
+                                    <!-- <mat-datepicker-toggle matSuffix [for]="endDatePickerForAdd"></mat-datepicker-toggle> -->
+                                    <mat-datepicker #endDatePickerForAdd></mat-datepicker>
+                                    <div *ngIf="!submitted && f['end_date'].errors?.['dateComparison']"
+                                        class="invalid-feedback">
+                                        End Date must be greater than Start Date
+                                    </div>
+                                    <div *ngIf="submitted && f['end_date'].errors" class="invalid-feedback">
+                                        <div *ngIf="f['end_date'].errors">
+                                            Invalid Date
+                                        </div>
+                                    </div>
+                                    <div *ngIf="submitted && f['end_date'].valid" class="valid-feedback">Looks
+                                        good!</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Project Description</label>
+                                <textarea rows="4" class="form-control summernote" formControlName="description"
+                                    [ngClass]="{ 'is-invalid': submitted && f['description'].errors ,
+                                    'is-valid':submitted && f['description'].valid}"></textarea>
+                                <div *ngIf="submitted && f['description'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['description'].errors">
+                                        Description is required
+                                    </div>
+                                </div>
+                                <div *ngIf="submitted && f['description'].valid" class="valid-feedback">Looks
+                                    good!</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label col-lg-2">Attached Files</label>
+                                <div class="col-lg-12">
+                                    <div class="custom-dropzone">
+                                        <span class="dropzone-text">Click or drag a file here</span>
+                                        <input type="file" class="dropzone-input" name="uploaded_files" multiple
+                                            (change)="onFileSelected($event)" formControlName="uploaded_files">
+                                    </div>
+                                    <div class="selected-file" *ngIf="selectedFiles && selectedFiles.length > 0"
+                                        style="display: flex; flex-wrap: wrap;">
+                                        <div class="chooseImg" *ngFor="let file of selectedFiles; let i = index">
+
+                                            <span>{{ file.name }}</span>
+                                            <a (click)="removeSingleFile(i)" title="Remove"
+                                                class="remove-file">&times;</a>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="submit-section">
+                        <button type="submit" class="btn btn-primary submit-btn" (click)="addProject()"
+                            [disabled]="isLoading">Create Project</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Create Project Modal -->
+
+<!-- Edit Project Modal -->
+<div id="edit_project" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="editProjectForm">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Project Name</label>
+                                <input class="form-control" type="text" formControlName="name"
+                                    placeholder="Enter Project Name..."
+                                    [ngClass]="{ 'is-invalid': submitted && g['name'].errors,'is-valid':submitted && g['name'].valid}"
+                                    required readonly>
+                                <div *ngIf="submitted && g['name']" class="invalid-feedback">
+                                    <div *ngIf="g['name'].errors && g['name'].errors['required']">Name is required</div>
+                                </div>
+                                <div *ngIf="g['name'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Project Abbreviation</label>
+                                <input class="form-control" type="text" formControlName="abbreviation"
+                                    placeholder="Enter Project Abbreviation..." [ngClass]="{ 'is-invalid': submitted && g['abbreviation'].errors ,
+                                    'is-valid':submitted && g['abbreviation'].valid} " required>
+                                <div *ngIf="submitted && g['abbreviation']" class="invalid-feedback">
+                                    <div *ngIf="g['abbreviation'].errors && g['abbreviation'].errors['required']">
+                                        Abbreviation is required</div>
+                                </div>
+                                <div *ngIf="g['abbreviation'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+                    <!-- Previous form fields -->
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="col-form-label" for="">Starter Date</label>
+                            <div class="cal-icon">
+                                <input class="form-control datetimepicker" bsDatepicker container=".date-input4"
+                                    type="text" formControlName="starter_at" [ngClass]="{ 'is-invalid': submitted && g['starter_at'].errors,
+                                    'is-valid': submitted && g['starter_at'].valid }" [isDisabled]="projectData"
+                                    style="height: 50px; ">
+                                <mat-datepicker #starterDatePicker></mat-datepicker>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3 date-input2">
+                                <label class="col-form-label" for="end_date">End Date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" bsDatepicker container=".date-input3"
+                                        type="text" placeholder="Select a due date..." formControlName="end_date"
+                                        [ngClass]="{ 'is-invalid': submitted && g['end_date'].errors,
+                                      'is-valid': submitted && g['end_date'].valid }" [minDate]="minDate"
+                                        style="height: 50px; transform: translateY(-9px);">
+                                    <!-- <mat-datepicker-toggle matSuffix [for]="endDatePickerForAdd"></mat-datepicker-toggle> -->
+                                    <mat-datepicker></mat-datepicker>
+                                    <div *ngIf="submitted && g['end_date'].errors" class="invalid-feedback">
+                                        <div *ngIf="g['end_date'].errors['required']">
+                                            End Date is required
+                                        </div>
+                                        <div *ngIf="g['end_date'].errors['invalidEndDate']">
+                                            End Date must be greater than Start Date
+                                        </div>
+                                    </div>
+                                    <div *ngIf="g['end_date'].valid" class="valid-feedback">Looks good!</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Project Description</label>
+                                <textarea rows="4" class="form-control summernote" formControlName="description"
+                                    placeholder="Enter Project Description here..." [ngClass]="{ 'is-invalid': submitted && f['description'].errors ,
+                                    'is-valid':submitted && f['description'].valid}"></textarea>
+                                <div *ngIf="submitted && f['description'].errors" class="invalid-feedback">
+                                    <div *ngIf="f['description'].errors">
+                                        Description is required
+                                    </div>
+                                </div>
+                                <div *ngIf="f['description'].valid" class="valid-feedback">Looks good!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button type="submit" class="btn btn-primary submit-btn" (click)="editProject()"
+                            [disabled]="editProjectForm.invalid">Update Project</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Project Modal -->
+
+<!-- Delete Project Modal -->
+<div class="modal custom-modal fade" id="delete_project" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Project</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-primary continue-btn" (click)="deleteProject()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Project Modal -->

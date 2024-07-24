@@ -1,0 +1,403 @@
+<!-- Page Content -->
+<app-project-modal [projectData]="projectData" (formSubmitted)="handleFormSubmission()"></app-project-modal>
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">{{projectData?.name}}</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Project</li>
+                </ul>
+            </div>
+            <div class="col-auto float-end ms-auto">
+                <a *ngIf="permissions.includes('change_project')" class="btn add-btn" data-bs-toggle="modal" data-bs-target="#edit_project"><i class="fa-solid fa-plus"></i>
+                    Edit
+                    Project</a>
+                <a [routerLink]="'/projects/task-board/'+projectData?.id" class="btn btn-rounded btn-warning float-end m-r-10 me-2"
+                    data-bs-toggle="tooltip" title="Task Board"><i class="fa-solid fa-tasks"></i> Task Board</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <div class="row">
+        <div class="col-lg-8 col-xl-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="project-title">
+                        <h5 class="card-title">{{projectData?.name}}</h5>
+
+                    </div>
+                    <p>{{projectData?.description}}</p>
+					
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body" >
+                    <h5 class="card-title m-b-20">Uploaded files
+                        <button *ngIf="permissions.includes('change_project')" type="button" class="float-end btn btn-success btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#addNewFile"><i class="fa-solid fa-plus"></i> Add</button>
+                    </h5>
+                    <div class="p-5" *ngIf="!(projectData?.files && projectData.files.length > 0)">
+                        <div style="overflow-y: auto; max-height: 400px;overflow-x: hidden;" >
+                            <div id="feragh"  style="display: flex; justify-content: space-around;">
+                                <img src="assets/img/nodata.jpg"  style="max-height: 200px;"/>
+                                <h1 style="color: rgb(165, 159, 159);align-items: center;margin-top: 100px;">No Files</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="files-list" *ngIf="projectData?.files && projectData.files.length > 0">
+                        <!-- Loop through the uploaded files and display each one -->
+                        <li *ngFor="let file of projectData.files">
+                            <div class="files-cont">
+                                <div class="file-type">
+                                    <!-- Assuming file type is available in the file object -->
+                                    <span class="files-icon"><i [class]="getFileIcon(file.file)"></i></span>
+                                </div>
+                                <div class="files-info">
+                                    <!-- Display file details -->
+                                    <span class="file-name text-ellipsis"><a (click)="downloadFile(file.file)">{{ getFileName(file.file) }}</a></span>
+            
+                                    <!-- Display file size -->
+                                    <!-- You might need to extract the file name and size from the file path -->
+                                    <div class="file-size" style="color: orange;">{{ getFileSize(file.file_size) }}</div>
+                                </div>
+                                <ul class="files-action" *ngIf="permissions.includes('change_project')">
+                                    <li class="dropdown dropdown-action">
+                                        <a href="" class="dropdown-toggle btn btn-link" data-bs-toggle="dropdown"
+                                           aria-expanded="false"><i class="material-icons">more_horiz</i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" (click)="passFile(file.id)" data-bs-toggle="modal"
+                                            data-bs-target="#delete_file">Delete</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            
+           
+        </div>
+        <div class="col-lg-4 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title m-b-15"><span>{{projectData?.name}}</span> details</h6>
+                    <table class="table table-striped table-border">
+                        <tbody>
+                            <tr>
+                                <td>Abbreviation:</td>
+                                <td class="text-end">{{projectData?.abbreviation}}</td>
+                            </tr>
+                            <tr>
+                                <td>Created:</td>
+                                <td class="text-end">{{ projectData?.starter_at | date: 'dd MMM, yyyy' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Deadline:</td>
+                                <td class="text-end">{{ projectData?.end_date | date: 'dd MMM, yyyy' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Status:</td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a  class="badge " [ngClass]="{
+                                            'badge-info': projectData?.status === 'Active',
+                                            'badge-danger': projectData?.status === 'Suspended',
+                                            'badge-success': projectData?.status === 'Completed',
+                                            'badge-primary': projectData?.status === 'Paused'
+                                        }" >{{ projectData?.status }}</a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" *ngIf="projectData?.status === 'Active'"><i class="fa-regular fa-circle-dot text-info"></i> Active</a>
+                                            <a class="dropdown-item" *ngIf="projectData?.status === 'Suspended'"><i class="fa-regular fa-circle-dot text-danger"></i> Suspended</a>
+                                            <a class="dropdown-item" *ngIf="projectData?.status === 'Completed'"><i class="fa-regular fa-circle-dot text-success "></i> Completed</a>
+                                            <a class="dropdown-item" *ngIf="projectData?.status === 'Paused'"><i class="fa-regular fa-circle-dot text-primary"></i> Paused</a>
+                                        </div>
+                                        
+                                    </div>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Customer:</td>
+                                <td class="text-end flex-wrap">
+                                    <a [routerLink]="'/customers/customer-details/' + projectData?.customer?.id">
+                                        <img class="avatar" [src]="projectData?.customer?.customer_photo" [alt]="'Customer: ' + projectData?.customer?.name" [title]="projectData?.customer?.name">
+                                        {{ projectData?.customer?.name?.length > 3 ? projectData?.customer?.name.substring(0, 3) + '...' : projectData?.customer?.name }}
+                                    </a>
+                                </td>                                
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card project-user">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">Project Manager 
+                        <button *ngIf="permissions.includes('change_project')" type="button"
+                            class="float-end btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#assign_user"><i class="fa-solid fa-pencil"></i> Edit</button></h6>
+                    <ul class="list-box">
+                        <li >
+                            <a [routerLink] = "routes.employeeProfile">
+                                <div class="list-item" >
+                                    <div class="list-left">
+                                        <span class="avatar"><img alt="" src="{{projectData?.project_manager?.profile_photo || image}}"></span>
+                                    </div>
+                                    <div class="list-body">
+                                        <span class="message-author">{{projectData?.project_manager?.firstname}} {{projectData?.project_manager?.lastname}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+            <div class="card project-user">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">Scrum Master 
+                        <button type="button" *ngIf="permissions.includes('change_project')"
+                            class="float-end btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#assign_scrum"><i class="fa-solid fa-pencil"></i> Edit</button></h6>
+                        <li class="list-group-item">
+                            <a [routerLink] = "routes.employeeProfile">
+                                <div class="list-item" >
+                                    <div class="list-left">
+                                        <span class="avatar"><img alt="" src="{{projectData?.scrum_master?.profile_photo || image}}"></span>
+                                    </div>
+                                    <div class="list-body">
+                                        <div class="member-container">
+                                        <span class="message-author">{{projectData?.scrum_master?.firstname}} {{projectData?.scrum_master?.lastname}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                </div>
+            </div>
+            <div class="card project-user">
+                <div class="card-body">
+                    <h6 class="card-title m-b-20">
+                        Team Members
+                        <button *ngIf="permissions.includes('change_project')" type="button" class="float-end btn btn-primary btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#assign_Teams"><i class="fa-solid fa-pencil"></i> Edit</button>
+                    </h6>
+                    <ul class="list-box">
+                        <li *ngFor="let member of projectData?.assigned_to">
+                            <a >
+                                <div class="list-item">
+                                    <div class="list-left">
+                                        <span class="avatar"><img alt="" [src]="member?.profile_photo||image"></span>
+                                    </div>
+                                    <div class="list-body">
+                                        <div class="member-container">
+                                            <span class="message-author">{{member?.firstname}} {{member?.lastname}}</span>
+                                            <button *ngIf="permissions.includes('change_project')" type="button" class="btn btn-danger btn-sm" (click)="deleteProjectMember(projectData.id, member.id)">
+                                                <i class="fa fa-trash" data-bs-toggle="tooltip" title="Delete"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+<!--Add New file Modal-->
+<div id="addNewFile" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Files</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-lg-12">
+                    <div class="custom-dropzone">
+                        <span class="dropzone-text">Click or drag a file here</span>
+                        <input type="file" class="dropzone-input" name="uploaded_files" multiple
+                            (change)="onFileSelected($event)" formControlName="uploaded_files">
+                    </div>
+                    <div class="selected-file" *ngIf="selectedFiles && selectedFiles.length > 0"
+                        style="display: flex; flex-wrap: wrap;">
+                        <div class="chooseImg" *ngFor="let file of selectedFiles; let i = index">
+
+                            <span>{{ file.name }}</span>
+                            <a (click)="removeSingleFile(i)" title="Remove"
+                                class="remove-file">&times;</a>
+
+                        </div>
+                    </div>
+            </div>
+                <div class="submit-section">
+                    <button class="btn btn-primary submit-btn" (click)="addFiles()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/Add New file Modal-->
+
+<!-- Assign Leader Modal -->
+<div id="assign_user" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select a New Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group m-b-30">
+                    <!--input placeholder="Search to add a leader" class="form-control search-input" type="text">
+                    <button class="btn btn-primary">Search</button-->
+                </div>
+                <div>
+                    <ul class="chat-user-list">
+                        <li *ngFor="let manager of projectManagers">
+                            <div class="chat-block d-flex justify-content-between align-items-center">
+                                <div class="user-info">
+                                    <span class="avatar"><img alt="" [src]="manager.profile_photo || image"></span>
+                                    <span class="user-name">{{manager.firstname}} {{manager.lastname}}</span>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm" (click)="assignNewManager(manager.id)" style="margin-left: 200px;">
+                                    <li><i
+                                    class="fa fa-user-plus"
+                                    data-bs-toggle="tooltip"
+                                    title="fa fa-user-plus"
+                                  ></i></li>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Assign Leader Modal -->
+
+<!-- Assign User Modal -->
+<div id="assign_Teams" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign the team to this project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group m-b-30">
+                    <input (keyup)="searchUsers()" [(ngModel)]="searchMember" placeholder="Search a user to assign" class="form-control search-input" type="text" matInput>
+                    <button class="btn btn-primary">Search</button>
+                  </div>
+                  <div>
+                    <ul class="chat-user-list">
+                      <li *ngFor="let member of dataSource.data">
+                        <div class="chat-block d-flex">
+                          <input type="checkbox" [id]="'checkbox_' + member.id" [value]="member.id" 
+                          (change)="onMemberSelected(member.id, $event)" [checked]="selectedTeamMembers.includes(member.id)">
+                          <label class="checkmark" [for]="'checkbox_' + member.id"></label>
+                          <span class="avatar" style="margin-left: 100px;"><img alt="" [src]="member?.profile_photo||image"></span>
+                          <div class="media-body align-self-center text-nowrap">
+                            <div class="user-name">{{member?.firstname}} {{member?.lastname}}</div>
+                            <span class="designation"></span>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                <div class="submit-section">
+                    <button class="btn btn-primary submit-btn" (click)="assignTeamMembers()">Submit</button> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Assign User Modal -->
+<!-- Assign scrum Master -->
+<div id="assign_scrum" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select a New Scrum Master</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group m-b-30">
+                    <!--input placeholder="Search to add a leader" class="form-control search-input" type="text">
+                    <button class="btn btn-primary">Search</button-->
+                </div>
+                <div>
+                    <ul class="chat-user-list">
+                        <li *ngFor="let manager of scrumMasters">
+                            <div class="chat-block d-flex justify-content-between align-items-center">
+                                <div class="user-info">
+                                    <span class="avatar"><img alt="" [src]="manager.profile_photo || image"></span>
+                                    <span class="user-name">{{manager.firstname}} {{manager.lastname}}</span>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm" (click)="assignNewScrum(manager.id)" style="margin-left: 200px;">
+                                    <li><i
+                                    class="fa fa-user-plus"
+                                    data-bs-toggle="tooltip"
+                                    title="fa fa-user-plus"
+                                  ></i></li>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Assign scrum Modal -->
+
+<div class="modal custom-modal fade" id="delete_file" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete File</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a  class="btn btn-primary continue-btn"
+                            (click)="deleteFile()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a  data-bs-dismiss="modal"
+                                class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

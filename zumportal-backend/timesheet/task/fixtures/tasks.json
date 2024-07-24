@@ -1,0 +1,123 @@
+[
+    {
+      "model": "task.Task",
+      "pk": 1,
+      "fields": {
+        "name": "Gestion des tasks",
+        "description": "gerer les tasks d'un project :-ajouter des tasks et l'afecter a des personnes-changer leur status...ect",
+        "status": "InProgress",
+        "startdate": "2024-05-13",
+        "creator": 55,
+        "affectedTo": 2,
+        "project": 2,
+        "createdate":"2024-05-11",
+        "enddate":"2024-05-20"
+      }
+    },
+    {
+        "model": "task.Task",
+        "pk": 2,
+        "fields": {
+          "name": "Gestion des customers",
+          "description": "gerer les clients :-ajouter des clients -modifier des clients...ect",
+          "status": "Completed",
+          "startdate": "2024-03-03",
+          "creator": 55,
+          "affectedTo": 2,
+          "project": 2,
+          "createdate":"2024-03-01",
+          "enddate":"2024-03-12"
+        }
+      },
+      {
+        "model": "task.Task",
+        "pk": 3,
+        "fields": {
+          "name": "Gestion des projets",
+          "description": "gerer les projets :-ajouter des projets et l'afecter a des clients-changer leur status et les modifier...ect",
+          "status": "Completed",
+          "startdate": "2024-03-03",
+          "creator": 55,
+          "affectedTo":1,
+          "project": 2,
+          "createdate":"2024-03-01",
+          "enddate":"2024-03-12"
+        }
+      },
+      {
+        "model": "task.Task",
+        "pk": 4,
+        "fields": {
+          "name": "Gestion des groups",
+          "description": "gerer les groups :-ajouter des groups et l'afecter des permisions-les modofier...ect",
+          "status": "ToDo",
+          "startdate": "2024-05-20",
+          "creator": 55,
+          "affectedTo": 2,
+          "project": 2,
+          "createdate":"2024-05-11",
+          "enddate":"2024-03-25"
+        }
+      },
+      {
+        "model": "task.Task",
+        "pk": 5,
+        "fields": {
+          "name": "Gestion des profils",
+          "description": "gerer les profils des emlpoyees :-ajouter des informations _ajouter des equipements...ect",
+          "status": "OnHold",
+          "startdate": "2024-05-08",
+          "creator": 55,
+          "affectedTo": 1,
+          "project": 2,
+          "createdate":"2024-05-07",
+          "enddate":"2024-03-12"
+        }
+      },
+      {
+        "model": "task.Task",
+        "pk": 6,
+        "fields": {
+          "name": "Gestion des Timesheets",
+          "description": "gerer les timesheet",
+          "status": "Review",
+          "startdate": "2024-04-15",
+          "creator": 55,
+          "affectedTo": 2,
+          "project": 2,
+          "createdate":"2024-04-14",
+          "enddate":"2024-04-30"
+        }
+      },
+      {
+        "model": "task.Task",
+        "pk": 7,
+        "fields": {
+            "name": "Gestion des resources",
+            "description": "gerer les resources",
+            "status": "Review",
+            "startdate": "2024-04-15",
+            "creator": 55,
+            "affectedTo": 1,
+            "project": 2,
+            "createdate":"2024-04-14",
+            "enddate":"2024-04-30"
+          }
+        },
+      {
+        "model": "task.Task",
+        "pk": 8,
+        "fields": {
+          "name": "Gestion des salles de reunions",
+          "description": "gerer les salles...ect",
+          "status": "ToDo",
+          "startdate": "2024-05-20",
+          "creator": 55,
+          "affectedTo": 2,
+          "project": 2,
+          "createdate":"2024-05-11",
+          "enddate":"2024-05-30"
+        }
+      }
+    ]
+  

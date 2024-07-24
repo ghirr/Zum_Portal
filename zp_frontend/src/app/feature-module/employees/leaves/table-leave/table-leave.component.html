@@ -1,0 +1,272 @@
+<div class="card card-table flex-fill">
+  <div class="card-header">
+    <h3 class="card-title mb-0">Leaves</h3>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive" style="height: 337.5px;">
+      <table matSort (matSortChange)="sortData($event)" class="table table-striped custom-table mb-0 datatable">
+        <thead>
+          <tr>
+            <th mat-sort-header="leaveType">Leave Type</th>
+            <th mat-sort-header="from">From</th>
+            <th mat-sort-header="to">To</th>
+            <th mat-sort-header="noofDays">No of Days</th>
+            <th mat-sort-header="reason">Reason</th>
+            <th mat-sort-header="status" class="text-center">Status</th>
+            <th mat-sort-header="id">Process</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of lstLeave;let i = index">
+            <td class="text-center">
+              <button class="btn btn-sm "[ngClass]="{'btn-outline-info': row.type.name === ('Personal leave'||'Recovery leave'),'btn-outline-warning': row.type.name === ('Annual leave'||'Maternity leave'||'Exceptional leave'),'btn-outline-danger':row.type.name === ('Emergency leave'||'Unpaid leave')}">{{row.type.name}}</button>
+            </td>
+            <td>{{row.leave_start }}</td>
+            <td>{{row.leave_end }}</td>
+            <td class="text-center">
+              <span class="btn btn-sm "
+                [ngClass]="{
+                  'btn-success': row.number_of_days <= 7,
+                  'btn-warning': row.number_of_days > 7 && row.number_of_days <= 12,
+                  'btn-danger': row.number_of_days > 12
+                }"
+              >
+                {{ row.number_of_days }}
+              </span>
+            </td>
+            <td>{{row.Reason}}</td>
+            <td class="text-align">
+              <span class="badge" [ngClass]="{'bg-inverse-success': row.status === 'Approved', 'bg-inverse-danger': row.status === 'Declined', 'bg-inverse-info': row.status === 'Pending'}">{{row.status}}</span>
+            </td>
+            <td class="text-center">
+              <div><a class="text-info" data-bs-toggle="modal" data-bs-target="#processLeave"
+                  (click)="openProcess(row.process)">View Process <span><i class="fa fa-th-list"></i></span></a></div>
+            </td>
+            <td class="text-end">
+              <div class="dropdown dropdown-action" [hidden]="row.status != 'Pending'">
+                <a class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i
+                    class="material-icons">more_vert</i></a>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit_leave"
+                    (click)="this.leaveToEdit=row;this.ngOnChange()"><i class="fa-solid fa-pencil m-r-5"></i> Edit</a>
+                  <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete_approve"
+                    (click)="this.leaveToEdit=row;this.ngOnChange()"><i class="fa-regular fa-trash-can m-r-5"></i>
+                    Delete</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="lstLeave.length === 0">
+            <td colspan="10">
+              <h5 style="text-align: center;">No data found</h5>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table_footer">
+      <div class="col-sm-12 col-md-5">
+        <div class="dataTables_info">
+          Showing {{ serialNumberArray[0] }} to
+          {{ serialNumberArray[serialNumberArray.length - 1] }} of
+          {{ totalData }} entries
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-md-7">
+        <div class="pagination_section">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{
+              disabled: currentPage === 1
+            }">
+              <a (click)="getMoreData('previous')" class="page-link" href="javascript:void(0);"
+                tabindex="-1">Previous</a>
+            </li>
+
+            <ng-container *ngFor="let item of pageNumberArray; let i = index">
+              <li class="page-item" [class.active]="item === currentPage" [ngClass]="
+                (pageNumberArray[currentPage - 2] > item &&
+                  item !== 1 &&
+                  pageNumberArray.length > 6) ||
+                (pageNumberArray[currentPage] < item &&
+                  item !== 1 &&
+                  pageNumberArray.length > 6 &&
+                  pageNumberArray.length !== item)
+                  ? 'hide-page-no'
+                  : 'show-page-no'
+              ">
+                <a (click)="moveToPage(item)" class="page-link" href="javascript:void(0);">
+                  {{ item }}
+                </a>
+              </li>
+              <li class="page-item" *ngIf="
+                i === 0 && pageNumberArray.length > 6 && currentPage > 2
+              " [hidden]="currentPage === 1" (click)="moveToPage(currentPage - 2)"
+                (keydown.enter)="moveToPage(currentPage - 2)" tabindex="0">
+                <a class="page-link" href="javascript:void(0);"> ... </a>
+              </li>
+              <li *ngIf="
+                i === pageNumberArray.length - 2 &&
+                pageNumberArray.length > 6
+              " [hidden]="
+                currentPage >=
+                  pageNumberArray[pageNumberArray.length - 2] ||
+                totalData < serialNumberArray[serialNumberArray.length - 1]
+              " class="page-item" (click)="moveToPage(currentPage + 2)" (keydown.enter)="moveToPage(currentPage + 2)"
+                tabindex="0">
+                <a class="page-link" href="javascript:void(0);"> ... </a>
+              </li>
+            </ng-container>
+
+            <li class="page-item" [ngClass]="{
+              disabled:
+                currentPage ===
+                  pageNumberArray[pageNumberArray.length - 1] ||
+                  lstLeave.length === 0
+            }">
+              <a (click)="getMoreData('next')" class="page-link" href="javascript:void(0);">Next
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Edit Leave Modal -->
+<div id="edit_leave" class="modal custom-modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Leave</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="this.editLeaveRequest">
+          <div class="input-block mb-3">
+            <label class="col-form-label" for="">Leave Type <span class="text-danger">*</span></label>
+            <mat-select class="input-block mb-3 form-control" formControlName="type" readonly>
+              <mat-option *ngFor="let type of lstLeaveType" [value]="type">{{type.name}}</mat-option>
+            </mat-select>
+          </div>
+          <div class="input-block mb-3 date-input6">
+            <label class="col-form-label" for="">From <span class="text-danger">*</span></label>
+            <div class="cal-icon">
+              <input class="form-control datetimepicker" formControlName="leave_start" bsDatepicker
+                container=".date-input6" type="text" [daysDisabled]="[0,6]"
+                [minDate]="editLeaveRequest.value.leave_start"
+                [value]="editLeaveRequest.value.leave_start | date:'MM/dd/yyy'" [ngClass]="{'is-invalid':(f['leave_start']?.invalid || (f['days']?.invalid ||this.remainLeaves<this.editLeaveRequest.value.days)),
+												   'is-valid':f['leave_start']?.valid }">
+              <div *ngIf=" f['leave_start']" class="text-danger">
+                <div
+                  *ngIf="f['leave_start'].errors|| (f['days']?.invalid ||this.remainLeaves<this.editLeaveRequest.value.days)">
+                  Invalid Date</div>
+              </div>
+            </div>
+          </div>
+          <div class="input-block mb-3 date-input7">
+            <label class="col-form-label" for="">To <span class="text-danger">*</span></label>
+            <div class="cal-icon">
+              <input class="form-control datetimepicker" bsDatepicker container=".date-input7" type="text"
+                formControlName="leave_end" [value]="editLeaveRequest.value.leave_end| date:'MM/dd/yyy'"
+                [minDate]="getMinDate()" [maxDate]="getMaxDate()" [daysDisabled]="[0,6]" [ngClass]="{'is-invalid':(f['leave_end']?.invalid ||(f['days']?.invalid ||this.remainLeaves<this.editLeaveRequest.value.days)) ,
+                'is-valid':f['leave_end']?.valid }">
+              <div *ngIf="f['leave_end']" class="text-danger">
+                <div
+                  *ngIf="f['leave_end'].errors || (f['days']?.invalid ||this.remainLeaves<this.editLeaveRequest.value.days)">
+                  Invalid Date</div>
+              </div>
+            </div>
+          </div>
+          <div class="input-block mb-3">
+            <label class="col-form-label" for="">Number of days <span class="text-danger">*</span></label>
+            <input class="form-control" readonly type="text" formControlName="days" [value]="calculateNumberOfDays()"
+              [ngClass]="{'is-invalid':(f['days']?.invalid ||this.remainLeaves<this.editLeaveRequest.value.days),
+												'is-valid':f['days']?.valid}">
+            <div *ngIf="f['days']" class="text-danger">
+              <div *ngIf="f['days'].errors">Fix Your Dates</div>
+              <div *ngIf="f['days'].value>this.remainLeaves">you passed your Remain leaves</div>
+            </div>
+          </div>
+          <div class="input-block mb-3">
+            <label class="col-form-label" for="">Remaining Leaves <span class="text-danger">*</span></label>
+            <input class="form-control" readonly [value]="remainLeaves" type="text">
+          </div>
+          <div class="input-block mb-3">
+            <label class="col-form-label" for="">Leave Reason <span class="text-danger">*</span></label>
+            <textarea rows="4" class="form-control" formControlName="reason" [ngClass]="{'is-invalid':f['reason']?.invalid,
+                                  'is-valid':f['reason']?.valid}"></textarea>
+            <div *ngIf="f['reason']" class="text-danger">
+              <div *ngIf="f['reason'].errors">Reason Required</div>
+            </div>
+          </div>
+          <div class="submit-section">
+            <button class="btn btn-primary submit-btn" (click)="editLeaveReaquest()">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Edit Leave Modal -->
+
+<!-- Delete Leave Modal -->
+<div class="modal custom-modal fade" id="delete_approve" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-header">
+          <h3>Delete Leave</h3>
+          <p>Are you sure want to Cancel this leave?</p>
+        </div>
+        <div class="modal-btn delete-action">
+          <div class="row">
+            <div class="col-6">
+              <a href="javascript:void(0);" class="btn btn-primary continue-btn"
+                (click)="deleteLeaveReqest()">Delete</a>
+            </div>
+            <div class="col-6">
+              <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Delete Leave Modal -->
+
+<div class="modal custom-modal fade" id="processLeave" role="dialog">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Process</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="progress">
+          <div *ngFor="let approver of process" class="progress-step" [ngClass]="{
+                            'bg-success': approver.approved === 'Approved',
+                            'bg-danger': approver.approved === 'Declined',
+                            'bg-primary': approver.approved === 'Pending'
+                          }">
+            <img [src]="approver.user.profile_photo?(baseUrl+approver.user.profile_photo):image" class="approver-img"
+              alt="{{ approver.user.username }}">
+
+          </div>
+        </div>
+        <mat-progress-bar mode="determinate" [value]="progressValue"
+          color="{{getProgressBarColor()}}"></mat-progress-bar>
+      </div>
+    </div>
+  </div>
+</div>

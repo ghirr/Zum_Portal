@@ -1,0 +1,65 @@
+[
+    {
+      "model": "timesheets.Timesheet",
+      "pk": 1,
+      "fields": {
+        "employee": 1,
+        "project": 1,
+        "date": "2023-01-15",
+        "site": "TN",
+        "location": "Zum-it Office",
+        "hours": 8,
+        "billable": 8
+      }
+    },
+    {
+      "model": "timesheets.Timesheet",
+      "pk": 2,
+      "fields": {
+        "employee": 2,
+        "project": 1,
+        "date": "2023-01-15",
+        "site": "TN",
+        "location": "Zum-it Office",
+        "hours": 8,
+        "billable": 8
+      }
+    },
+    {
+      "model": "timesheets.Task",
+      "pk": 1,
+      "fields": {
+        "status": "Pending",
+        "timesheet": 1,
+        "task": "Complete feature A"
+      }
+    },
+    
+    {
+      "model": "timesheets.Task",
+      "pk": 2,
+      "fields": {
+        "status": "Completed",
+        "timesheet": 1,
+        "task": "Review documentation"
+      }
+    },
+    {
+      "model": "timesheets.Task",
+      "pk": 3,
+      "fields": {
+        "status": "Suspended",
+        "timesheet": 2,
+        "task": "Investigate bug in module X"
+      }
+    },
+    {
+      "model": "timesheets.Task",
+      "pk": 4,
+      "fields": {
+        "status": "Completed",
+        "timesheet": 2,
+        "task": "Prepare presentation for client meeting"
+      }
+    }
+  ]

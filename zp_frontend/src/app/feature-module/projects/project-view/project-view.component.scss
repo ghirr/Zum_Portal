@@ -1,0 +1,162 @@
+.custom-dropzone {
+    position: relative;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .dropzone-text {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .dropzone-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  .selected-file {
+    margin-top: 10px;
+  }
+  
+  .file-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .selected-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .file-name {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    /* Added missing styling rule */
+    display: inline-block;
+  }
+  .success-class {
+    color: green;
+  }
+  
+  .error-class {
+    color: red;
+  }
+  .selected-file {
+    margin-top: 10px;
+  }
+  
+  /* Style for each file in the selected files container */
+ /* Style for the 'x' button to remove the file */
+.selected-file .chooseImg a {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #d9534f;
+    font-weight: bold;
+    text-decoration: none; /* Remove default link underline */
+}
+
+.selected-file .chooseImg a:hover {
+    color: #a94442; /* Change color on hover */
+}
+
+/* Style for the remove file container */
+.selected-file .chooseImg {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    padding: 5px 10px;
+}
+
+.remove-file {
+  color: red;
+  cursor: pointer;
+}
+
+.remove-file:hover {
+  color: darkred;
+}
+
+.user-info {
+  flex: 1; /* Allow user info to take remaining space */
+}
+
+.avatar-and-button {
+  display: flex; /* Use flexbox to align items */
+  align-items: center; /* Align items vertically */
+}
+/* Hide the default checkbox */
+input[type="checkbox"] {
+  display: none;
+}
+
+/* Style the custom checkbox */
+.checkmark {
+  position: relative;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-color: #eee;
+}
+
+/* Create the checkmark icon */
+.checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark icon when the checkbox is checked */
+input[type="checkbox"]:checked + .checkmark::after {
+  display: block;
+}
+
+/* Style the checkmark icon */
+.checkmark::after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid black;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+input[type="checkbox"]:checked + .checkmark {
+  background-color: #2196F3;
+}
+
+.member-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  margin-bottom: 10px; /* Add space between each member */
+
+}
+
+.member-container .btn {
+  margin-left: 10px; /* Adjust as needed */
+}

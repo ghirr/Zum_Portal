@@ -1,0 +1,31 @@
+[
+  {
+    "model": "project.Project",
+    "pk": 3,
+    "fields": {
+      "name": "Meriem's Project",
+      "description": "A fantastic project managed by Meriem.",
+      "status": "active",
+      "starter_at": "2024-03-24T12:00:00Z",
+      "manager": 2,
+      "assigned_to": [1, 2, 3],
+      "end_date": "2024-10-05",
+      "customer": 1
+    }
+  },
+  {
+    "model": "project.Project",
+    "pk": 8,
+    "fields": {
+      "name": "Project ABC",
+      "description": "An important project with a three-letter abbreviation.",
+      "status": "active",
+      "starter_at": "2024-03-24T12:00:00Z",
+      "manager": 2,
+      "assigned_to": [1, 2, 3],
+      "abbreviation": "PRJ1",
+      "end_date": "2024-10-05",
+      "customer": 2
+    }
+  }
+]

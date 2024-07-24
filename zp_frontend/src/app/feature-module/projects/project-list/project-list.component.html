@@ -1,0 +1,293 @@
+<app-project-modal [projectData]="selectedProject" (formSubmitted)="handleFormSubmission()"></app-project-modal>
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Projects</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/dashboard/admin'">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Projects</li>
+                </ul>
+            </div>
+            <div class="col-auto float-end ms-auto">
+                <a class="btn add-btn" *ngIf="connectedUser.permissions.includes('add_project')"><i class="fa-solid fa-plus"></i>
+                    Create Project</a>
+                <div class="view-icons">
+                    <a [routerLink]="'/projects/project-page'" class="grid-view btn btn-link"><i class="fa fa-th"></i></a>
+                    <a [routerLink]="'/projects/project-list'" class="list-view btn btn-link active"><i
+                            class="fa-solid fa-bars"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <!-- Search Filter -->
+    <div class="row filter-row">
+        <div class="col-sm-6 col-md-9">
+          <div class="input-block mb-3 form-focus inputs" >
+              <mat-form-field class="example-full-width">
+              <mat-label>Project Details</mat-label>
+              <!--<input type="text" matInput>-->
+              <input  (keyup)="searchData()" [(ngModel)]="searchProject" class="form-control form-control-sm" matInput>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- <div class="col-sm-6 col-md-3">
+            <a class="btn btn-success w-100"> Search </a>
+        </div> -->
+    </div>
+    <!-- /Search Filter -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table_header">
+                <div class="row">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_length">
+                      <label>
+                        Show
+                        <select
+                          [(ngModel)]="pageSize"
+                          (ngModelChange)="changePageSize()"
+                          class="form-control form-control-sm"
+                        >
+                          <option value="10">10</option>
+                          <option value="25">25</option>
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                        </select>
+                        Entries
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            <div class="table-responsive">
+                <table  matSort
+                (matSortChange)="sortData($event)"
+                    class="table table-striped custom-table datatable">
+                    <thead>
+                        <tr>
+                            <th mat-sort-header="name">Project Name</th>
+                            <th mat-sort-header="projectId">Abbreviation</th>
+                            <th >Starter Date</th>
+                            <th >Manager</th>
+                            <th>Customer</th>
+                            <th>Due Date</th>
+                            <th>Team</th>
+                            <th mat-sort-header="id">Status</th>
+                            <th class="text-end" *ngIf="connectedUser.permissions.includes('change_project') || connectedUser.permissions.includes('delete_project')">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let project of projects;let i = index">
+                            <td>
+                                <a [routerLink]="'/projects/project-view/' + project.id">{{project.name}}</a>
+                            </td>
+                            
+                            <td>{{project.abbreviation}}</td>
+                            <td>{{project.starter_at | date:'yyyy-MM-dd'}} </td>
+                            <td> {{project?.project_manager?.firstname}} {{project?.project_manager?.lastname}}
+                              <ul class="team-members">
+                                <li>
+                                    <a data-bs-toggle="tooltip" title="{{project.project_manager?.firstname}} {{project.project_manager?.lastname}}">
+                                      <img src="{{project.project_manager?.profile_photo || image}}" alt >
+                                    </a>
+                                </li>
+                              </ul>
+                            </td>
+                            <td><img class="avatar" src="{{project.customer?.customer_photo}}" /> {{project.customer?.name}}
+                              
+                            </td>
+                            
+                            
+                            <td>{{project.end_date}} </td>
+                            <td>
+                              <ul class="team-members" >
+                                <li *ngFor="let team of project?.assigned_to.slice(0,3)">
+                                    <a href="javascript:void(0);" data-bs-toggle="tooltip" Mattooltip="John Doe" title="John Doe"><img src="{{team?.profile_photo}}" alt="User Image"></a>
+                                </li>
+
+                                <li class="dropdown avatar-dropdown" >
+                                    <a href="javascript:void(0);" class="all-users dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">+{{project.assigned_to.length -3}}</a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <div class="avatar-group">
+                                            <a class="avatar avatar-xs" *ngFor="let team of project?.assigned_to.slice(3)" href="javascript:void(0);">
+                                                <img src="{{team.profile_photo}}" alt="User Image">
+                                            </a>
+                                        </div>
+                                        <div class="avatar-pagination">
+                                            <ul class="pagination">
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0);" aria-label="Previous">
+                                                        <span aria-hidden="true">«</span>
+                                                        <span class="visually-hidden">Previous</span>
+                                                    </a>
+                                                </li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="javascript:void(0);" aria-label="Next">
+                                                        <span aria-hidden="true">»</span>
+                                                    <span class="visually-hidden">Next</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li> 
+                            </ul>
+                          </td>
+                          
+                          
+                          <td>
+                            <div class="dropdown action-label">
+                                <a href="" class="btn btn-white btn-sm btn-rounded dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-regular fa-circle-dot" [ngClass]="{
+                                        'text-success': project.status === 'Active',
+                                        'text-danger': project.status === 'Suspended',
+                                        'text-primary': project.status === 'Completed',
+                                        'text-warning': project.status === 'Paused'
+                                    }"></i> 
+                                    {{ project.status }}
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item " (click)="updateStatus(project.id, 'Active')"><i class="fa-regular fa-circle-dot text-success me-1"></i>Active</a>
+                                    <a class="dropdown-item" (click)="updateStatus(project.id, 'Suspended')"><i class="fa-regular fa-circle-dot text-danger me-1"></i>Suspended</a>
+                                    <a class="dropdown-item" (click)="updateStatus(project.id, 'Completed')"><i class="fa-regular fa-circle-dot text-primary me-1"></i>Completed</a>
+                                    <a class="dropdown-item" (click)="updateStatus(project.id, 'Paused')"><i class="fa-regular fa-circle-dot text-warning me-1"></i>Paused</a>
+                                </div>
+                            </div>
+                        </td>
+                        
+                        
+                            
+                            <td class="text-end" *ngIf="connectedUser.permissions.includes('change_project') ||connectedUser.permissions.includes('delete_project')">
+                                <div class="dropdown dropdown-action">
+                                    <a class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
+                                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                      <a  *ngIf="connectedUser.permissions.includes('change_project') " [routerLink]="'/projects/project-view/' + project.id" class="dropdown-item">
+                                        <i class="fa-solid fa-pencil m-r-5"></i> Edit
+                                      </a>
+                                        <a *ngIf=" connectedUser.permissions.includes('delete_project')" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete_project"
+                                            (click)="passProjectData(project)"><i class="fa-regular fa-trash-can m-r-5"></i> Delete</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="projects.length === 0">
+                          <td colspan="10">
+                            <h5 style="text-align: center;">No data found</h5>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table_footer">
+                <div class="col-sm-12 col-md-5">
+                  <div class="dataTables_info">
+                    Showing {{ serialNumberArray[0] }} to
+                    {{ serialNumberArray[serialNumberArray.length - 1] }} of
+                    {{ totalData }} entries
+                  </div>
+                </div>
+        
+                <div class="col-sm-12 col-md-7">
+                  <div class="pagination_section">
+                    <ul class="pagination">
+                      <li
+                        class="page-item"
+                        [ngClass]="{
+                          disabled: currentPage === 1
+                        }"
+                      >
+                        <a
+                          (click)="getMoreData('previous')"
+                          class="page-link"
+                          href="javascript:void(0);"
+                          tabindex="-1"
+                          >Previous</a
+                        >
+                      </li>
+        
+                      <ng-container *ngFor="let item of pageNumberArray; let i = index">
+                        <li
+                          class="page-item"
+                          [class.active]="item === currentPage"
+                          [ngClass]="
+                            (pageNumberArray[currentPage - 2] > item &&
+                              item !== 1 &&
+                              pageNumberArray.length > 6) ||
+                            (pageNumberArray[currentPage] < item &&
+                              item !== 1 &&
+                              pageNumberArray.length > 6 &&
+                              pageNumberArray.length !== item)
+                              ? 'hide-page-no'
+                              : 'show-page-no'
+                          "
+                        >
+                          <a
+                            (click)="moveToPage(item)"
+                            class="page-link"
+                            href="javascript:void(0);"
+                          >
+                            {{ item }}
+                          </a>
+                        </li>
+                        <li
+                          class="page-item"
+                          *ngIf="
+                            i === 0 && pageNumberArray.length > 6 && currentPage > 2
+                          "
+                          [hidden]="currentPage === 1"
+                          (click)="moveToPage(currentPage - 2)" (keydown.enter)="moveToPage(currentPage - 2)" tabindex="0"
+                        >
+                          <a class="page-link" href="javascript:void(0);"> ... </a>
+                        </li>
+                        <li
+                          *ngIf="
+                            i === pageNumberArray.length - 2 &&
+                            pageNumberArray.length > 6
+                          "
+                          [hidden]="
+                            currentPage >=
+                              pageNumberArray[pageNumberArray.length - 2] ||
+                            totalData < serialNumberArray[serialNumberArray.length - 1]
+                          "
+                          class="page-item"
+                          (click)="moveToPage(currentPage + 2)" (keydown.enter)="moveToPage(currentPage + 2)" tabindex="0"
+                        >
+                          <a class="page-link" href="javascript:void(0);"> ... </a>
+                        </li>
+                      </ng-container>
+        
+                      <li
+                        class="page-item"
+                        [ngClass]="{
+                          disabled:
+                            currentPage ===
+                              pageNumberArray[pageNumberArray.length - 1] ||
+                            projects.length === 0
+                        }"
+                      >
+                        <a
+                          (click)="getMoreData('next')"
+                          class="page-link"
+                          href="javascript:void(0);"
+                          >Next
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->

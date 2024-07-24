@@ -1,0 +1,290 @@
+<!-- Page Content -->
+<div class="page-wrapper">
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Meeting Rooms</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Meeting Rooms</li>
+                    </ul>
+                </div>
+                <div class="col-auto float-end ms-auto">
+                    <a class="btn add-btn" data-bs-toggle="modal" data-bs-target="#add_mr"><i
+                            class="fa-solid fa-plus"></i> Add
+                        Meeting Room</a>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table_header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length">
+                                <label>
+                                    Show
+                                    <select [(ngModel)]="pageSize" (ngModelChange)="changePageSize()"
+                                        class="form-control form-control-sm">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                    Entries
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="table-responsive">
+                    <table matSort (matSortChange)="sortData($event)"
+                        class="table table-striped custom-table datatable mb-0">
+                        <thead>
+                            <tr>
+                                <th mat-sort-header="employeeName">#</th>
+                                <th mat-sort-header="providentFundType">Name</th>
+                                <th mat-sort-header="employeeShare">Absorption Capacity</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let provident of allMeetingRooms;let i = index">
+                                <td>{{provident.MeetingRoomId}}</td>
+                                <td>{{provident.name}}</td>
+                                <td>{{provident.Absorption_capacity}}</td>
+                                <td>
+                                    <div class="dropdown dropdown-action">
+                                        <a class="action-icon dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#edit_mr"
+                                                (click)="ngOnChanges(provident)"><i
+                                                    class="fa-solid fa-pencil m-r-5"></i> Edit</a>
+                                            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#delete_mr"
+                                                (click)="ngOnChanges(provident)"><i
+                                                    class="fa-regular fa-trash-can m-r-5"></i>
+                                                Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="allMeetingRooms.length === 0">
+                                <td colspan="10">
+                                    <h5 style="text-align: center;">No data found</h5>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table_footer">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_info">
+                            Showing {{ serialNumberArray[0] }} to
+                            {{ serialNumberArray[serialNumberArray.length - 1] }} of
+                            {{ totalData }} entries
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-7">
+                        <div class="pagination_section">
+                            <ul class="pagination">
+                                <li class="page-item" [ngClass]="{
+                            disabled: currentPage === 1
+                            }">
+                                    <a (click)="getMoreData('previous')" class="page-link" href="javascript:void(0);"
+                                        tabindex="-1">Previous</a>
+                                </li>
+
+                                <ng-container *ngFor="let item of pageNumberArray; let i = index">
+                                    <li class="page-item" [class.active]="item === currentPage" [ngClass]="
+                                (pageNumberArray[currentPage - 2] > item &&
+                                item !== 1 &&
+                                pageNumberArray.length > 6) ||
+                                (pageNumberArray[currentPage] < item &&
+                                item !== 1 &&
+                                pageNumberArray.length > 6 &&
+                                pageNumberArray.length !== item)
+                                ? 'hide-page-no'
+                                : 'show-page-no'
+                            ">
+                                        <a (click)="moveToPage(item)" class="page-link" href="javascript:void(0);">
+                                            {{ item }}
+                                        </a>
+                                    </li>
+                                    <li class="page-item" *ngIf="
+                                i === 0 && pageNumberArray.length > 6 && currentPage > 2
+                            " [hidden]="currentPage === 1" (click)="moveToPage(currentPage - 2)"
+                                        (keydown.enter)="moveToPage(currentPage - 2)" tabindex="0">
+                                        <a class="page-link" href="javascript:void(0);"> ... </a>
+                                    </li>
+                                    <li *ngIf="
+                                i === pageNumberArray.length - 2 &&
+                                pageNumberArray.length > 6
+                            " [hidden]="
+                                currentPage >=
+                                pageNumberArray[pageNumberArray.length - 2] ||
+                                totalData < serialNumberArray[serialNumberArray.length - 1]
+                            " class="page-item" (click)="moveToPage(currentPage + 2)"
+                                        (keydown.enter)="moveToPage(currentPage + 2)" tabindex="0">
+                                        <a class="page-link" href="javascript:void(0);"> ... </a>
+                                    </li>
+                                </ng-container>
+
+                                <li class="page-item" [ngClass]="{
+                            disabled:
+                                currentPage ===
+                                pageNumberArray[pageNumberArray.length - 1] ||
+                                allMeetingRooms.length === 0
+                            }">
+                                    <a (click)="getMoreData('next')" class="page-link" href="javascript:void(0);">Next
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+<!-- Add PF Modal -->
+<div id="add_mr" class="modal custom-modal fade" role="dialog" (hidden.bs.modal)="resetForm()">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Meeting Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addMeetingRoom">
+                    <div *ngIf="errorMessage!=''" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong>{{errorMessage}}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">MeetingRoom Name</label>
+                                <input class="form-control" type="text" formControlName="name" [ngClass]="{'is-invalid':addMeetingRoom.get('name')?.invalid && addMeetingRoom.get('name')?.touched ,
+													'is-valid':addMeetingRoom.get('name')?.valid && addMeetingRoom.get('name')?.touched }">
+                                <div *ngIf="addMeetingRoom.get('name')?.invalid && addMeetingRoom.get('name')?.touched">
+                                    <small
+                                        *ngIf="addMeetingRoom.get('name')?.invalid && addMeetingRoom.get('name')?.touched"
+                                        class="text-danger"> *name is required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Absorption Capacity</label>
+                                <input class="form-control" type="number" formControlName="Absorption_capacity" min="5"
+                                    [ngClass]="{'is-invalid':addMeetingRoom.get('Absorption_capacity')?.invalid && addMeetingRoom.get('Absorption_capacity')?.touched ,
+                                'is-valid':addMeetingRoom.get('Absorption_capacity')?.valid && addMeetingRoom.get('Absorption_capacity')?.touched }">
+                                <div
+                                    *ngIf="addMeetingRoom.get('Absorption_capacity')?.invalid && addMeetingRoom.get('Absorption_capacity')?.touched">
+                                    <small
+                                        *ngIf="addMeetingRoom.get('Absorption_capacity')?.invalid && addMeetingRoom.get('Absorption_capacity')?.touched"
+                                        class="text-danger"> *Absorption Capacity Mininimum 5</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" (click)="addMeetingRooms()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add PF Modal -->
+
+<!-- Edit PF Modal -->
+<div id="edit_mr" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Meeting Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="editMeetingRoom">
+                    <div *ngIf="errorMessage!=''" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong>{{errorMessage}}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">MeetingRoom Name</label>
+                                <input class="form-control" type="text" formControlName="name" [ngClass]="{'is-invalid':editMeetingRoom.get('name')?.invalid && editMeetingRoom.get('name')?.touched ,
+													'is-valid':editMeetingRoom.get('name')?.valid && editMeetingRoom.get('name')?.touched }">
+                                <div
+                                    *ngIf="editMeetingRoom.get('name')?.invalid && editMeetingRoom.get('name')?.touched">
+                                    <small
+                                        *ngIf="editMeetingRoom.get('name')?.invalid && editMeetingRoom.get('name')?.touched"
+                                        class="text-danger"> *name is required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="">Absorption Capacity</label>
+                                <input class="form-control" type="number" formControlName="Absorption_capacity" min="5"
+                                    [ngClass]="{'is-invalid':editMeetingRoom.get('Absorption_capacity')?.invalid && editMeetingRoom.get('Absorption_capacity')?.touched ,
+                                'is-valid':editMeetingRoom.get('Absorption_capacity')?.valid && editMeetingRoom.get('Absorption_capacity')?.touched }">
+                                <div
+                                    *ngIf="editMeetingRoom.get('Absorption_capacity')?.invalid && editMeetingRoom.get('Absorption_capacity')?.touched">
+                                    <small
+                                        *ngIf="editMeetingRoom.get('Absorption_capacity')?.invalid && editMeetingRoom.get('Absorption_capacity')?.touched"
+                                        class="text-danger"> *Absorption Capacity Mininimum 5</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" (click)="editMeetingRooms()">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit PF Modal -->
+
+<!-- Delete PF Modal -->
+<div class="modal custom-modal fade" id="delete_mr" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Meeting Room</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a class="btn btn-primary continue-btn" (click)="deleteMeetingRoom()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a data-bs-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete PF Modal -->

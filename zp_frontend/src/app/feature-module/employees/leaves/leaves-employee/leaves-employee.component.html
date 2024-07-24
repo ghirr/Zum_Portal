@@ -1,0 +1,290 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Leaves</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Leaves</li>
+                </ul>
+            </div>
+            <div class="col-auto float-end ms-auto">
+                <a class="btn add-btn" data-bs-toggle="modal" data-bs-target="#add_leaves"><i class="fa-solid fa-plus"></i>
+                    Add Leave</a>
+            </div>
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+    <!-- Leave Statistics -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="stats-info">
+                <h6>Remaining Leave</h6>
+                <h4>{{remainLeaves}}</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-info">
+                <h6>Remaining TT</h6>
+                <h4>{{remainTT}}</h4>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-info">
+                <h6>Remaining Exit</h6>
+                <h4>{{remainExit}}</h4>
+            </div>
+        </div>
+    </div>
+    <!-- /Leave Statistics -->
+
+    <div class="row">
+		<div class="col-md-6">
+        <app-table-tt [remainTT]="remainTT" ></app-table-tt>
+	</div>
+		<div class="col-md-6">
+			<app-table-exitauthorization [remainExit]="remainExit"></app-table-exitauthorization>
+        </div>
+		<div class="col-md-12">
+		<app-table-leave [remainLeaves]="remainLeaves"></app-table-leave>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+                <!-- Add Leaves Modal -->
+				<div id="add_leaves" class="modal custom-modal fade" role="dialog" (hidden.bs.modal)="resetForm()">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Add Leave</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetForm()">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<mat-stepper #stepper>
+                                    <mat-step
+                                      [stepControl]="firstFormGroup"
+                                      errorMessage="Name is required."
+                                    >
+                                      <form [formGroup]="firstFormGroup">
+                                        <ng-template matStepLabel>Choose Type of Leaves</ng-template>
+                                        <div class="input-block mb-3">
+                                            <label class="col-form-label" for="">Leave Type <span class="text-danger">*</span></label>
+											<div class="d-flex justify-content-between flex-wrap">
+												<div class="card pointer col-sm-12 col-md-6 col-lg-3 col-xl-3" style="width: 120px;height: 100px;"
+													 *ngFor="let type of leavesType"
+													 (click)="selectType(type)">
+												  <div class="card-body d-flex align-items-center justify-content-center" [ngClass]="{'selected': selectedType[0][0] === type[0][0]}">
+													<h6 class="card-text " style="white-space: nowrap">
+														{{type[0][0]}}
+													</h6>
+												  </div>
+												</div>
+											  </div>
+											  
+                                              
+                                        </div>
+                                        <div>
+                                          <button mat-button matStepperNext class="btn btn-primary" class="btn btn-primary">Next</button>
+                                        </div>
+                                      </form>
+                                    </mat-step>
+                                    <mat-step
+                                      [stepControl]="selectedType[0][1]"
+                                    >
+									<div class="modal-body" *ngIf="selectedType[0][0]=='Leave'">
+										<form [formGroup]="addLeaveRequest" >
+											<ng-template matStepLabel>Fill out your Request</ng-template>
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="">Leave Type <span class="text-danger">*</span></label>
+												<mat-select  class="input-block mb-3 form-control" formControlName="type">
+													<mat-option  *ngFor="let type of lstLeaveType" [value]="type" >{{type.name}}</mat-option>
+												</mat-select>
+											</div>
+											<div class="input-block mb-3 date-input1">
+												<label class="col-form-label" for="">From <span class="text-danger">*</span></label>
+												<div class="cal-icon">
+													<input formControlName="leave_start" class="form-control datetimepicker" bsDatepicker container=".date-input2" type="text" [daysDisabled]="[0,6]" [minDate]="today" 
+													[ngClass]="{'is-invalid':(f['leave_start']?.invalid || (f['days']?.invalid ||this.remainLeaves<this.addLeaveRequest.value.days)) && isLeaveSubmited,
+												   'is-valid':f['leave_start']?.valid && isLeaveSubmited}"
+													>
+													<div *ngIf="isLeaveSubmited && f['leave_start']" class="text-danger">
+													   <div *ngIf="f['leave_start'].errors|| (f['days']?.invalid ||this.remainLeaves<this.addLeaveRequest.value.days)">Invalid Date</div>
+												   </div>
+												</div>
+											</div>
+											<div class="input-block mb-3 date-input2">
+												<label class="col-form-label" for="" >To <span class="text-danger">*</span></label>
+												<div class="cal-icon">
+													<input formControlName="leave_end" class="form-control datetimepicker" bsDatepicker container=".date-input2" type="text"
+													 [minDate]="getMinDate()" [maxDate]="getMaxDate()" [daysDisabled]="[0,6]" 
+													 [ngClass]="{'is-invalid':(f['leave_end']?.invalid ||(f['days']?.invalid ||this.remainLeaves<this.addLeaveRequest.value.days)) && isLeaveSubmited,
+													'is-valid':f['leave_end']?.valid && isLeaveSubmited}"
+													 >
+													 <div *ngIf="isLeaveSubmited && f['leave_end']" class="text-danger">
+														<div *ngIf="f['leave_end'].errors || (f['days']?.invalid ||this.remainLeaves<this.addLeaveRequest.value.days)">Invalid Date</div>
+													</div>
+												</div>
+											</div>
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="">Number of days <span class="text-danger">*</span></label>
+												<input class="form-control" readonly type="text" formControlName="days" [value]="calculateNumberOfDaysLeave()"
+												[ngClass]="{'is-invalid':(f['days']?.invalid ||this.remainLeaves<this.addLeaveRequest.value.days) && isLeaveSubmited,
+												'is-valid':f['days']?.valid && isLeaveSubmited}"
+												>
+												<div *ngIf="isLeaveSubmited && f['days']" class="text-danger">
+													<div *ngIf="f['days'].errors">Fix Your Dates</div>
+													<div *ngIf="f['days'].value>this.remainLeaves">you passed your Remain leaves</div>
+												</div>
+											</div>
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="">Remaining Leaves <span class="text-danger">*</span></label>
+												<input class="form-control" readonly [value]="remainLeaves" type="text">
+											</div>
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="">Leave Reason <span class="text-danger">*</span></label>
+												<textarea rows="4" class="form-control" formControlName="reason"
+												[ngClass]="{'is-invalid':f['reason']?.invalid && isLeaveSubmited,
+                                        		'is-valid':f['reason']?.valid && isLeaveSubmited}"
+												></textarea>
+												<div *ngIf="isLeaveSubmited && f['reason']" class="text-danger">
+													<div *ngIf="f['reason'].errors">Reason Required</div>
+												</div>
+											</div>
+											<div class="submit-section">
+												<button class="btn btn-primary submit-btn" (click)="addLeaveReaquest()">Submit</button>
+											</div>
+										</form>
+									</div>
+									<div class="modal-body" *ngIf="selectedType[0][0]=='working remotely'">
+										<form [formGroup]="addTTRequest" >
+											<ng-template matStepLabel>Fill out your Request</ng-template>
+											<div class="input-block mb-3 date-input1">
+												<label class="col-form-label" for="">From <span class="text-danger">*</span></label>
+												<div class="cal-icon">
+													<input formControlName="tt_start" class="form-control datetimepicker" bsDatepicker container=".date-input2" type="text" [daysDisabled]="[0,6]" [minDate]="today" 
+													[ngClass]="{'is-invalid':(g['tt_start']?.invalid || (g['days']?.invalid ||this.remainTT<this.addTTRequest.value.days)) && isTTSubmited,
+													'is-valid':g['tt_start']?.valid && isTTSubmited}"
+													 >
+													 <div *ngIf="isTTSubmited && g['tt_start']" class="text-danger">
+														<div *ngIf="g['tt_start'].errors|| (g['days']?.invalid ||this.remainTT<this.addTTRequest.value.days)">Invalid Date</div>
+													</div>
+												</div>
+											</div>
+											<div class="input-block mb-3 date-input2">
+												<label class="col-form-label" for="" >To <span class="text-danger">*</span></label>
+												<div class="cal-icon">
+													<input formControlName="tt_end" class="form-control datetimepicker" bsDatepicker container=".date-input2" type="text"
+													 [minDate]="getMinDateTT()" [maxDate]="getMaxDateTT()" [daysDisabled]="[0,6]" 
+													 [ngClass]="{'is-invalid':(g['tt_end']?.invalid ||(g['days']?.invalid ||this.remainTT<this.addTTRequest.value.days)) && isTTSubmited,
+													'is-valid':g['tt_end']?.valid && isTTSubmited}"
+													 >
+													 <div *ngIf="isTTSubmited && g['tt_end']" class="text-danger">
+														<div *ngIf="g['tt_end'].errors || (g['tt_end']?.invalid ||this.remainTT<this.addTTRequest.value.days)">Invalid Date</div>
+													</div>
+												</div>
+											</div>
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="">Number of days <span class="text-danger">*</span></label>
+												<input class="form-control" readonly type="text" formControlName="days" [value]="calculateNumberOfDaysTT()"
+												[ngClass]="{'is-invalid':(g['days']?.invalid ||this.remainTT<this.addTTRequest.value.days) && isTTSubmited,
+												'is-valid':g['days']?.valid && isTTSubmited}"
+												>
+												<div *ngIf="isTTSubmited && g['days']" class="text-danger">
+													<div *ngIf="g['days'].errors">Fix Your Dates</div>
+													<div *ngIf="g['days'].value>this.remainTT">you passed your Remain TT</div>
+												</div>
+											</div>
+											<div class="input-block mb-3">
+												<label class="col-form-label" for="">Remaining TT <span class="text-danger">*</span></label>
+												<input class="form-control" readonly [value]="remainTT" type="text">
+											</div>
+											<div class="submit-section">
+												<button class="btn btn-primary submit-btn" (click)="addTTReaquest()">Submit</button>
+											</div>
+										</form>
+									</div>
+									<div class="modal-body" *ngIf="selectedType[0][0]=='exit authorization'" >
+                                      <form  [formGroup]="addExitRequest">
+                                        <ng-template matStepLabel>Fill out your Request</ng-template>
+										
+										<div class="input-block mb-3 date-input2">
+											<label class="col-form-label" for="">Exit Day <span class="text-danger">*</span></label>
+											<div class="cal-icon">
+												<input formControlName="exit_day" class="form-control datetimepicker" bsDatepicker container=".date-input2" type="text" [daysDisabled]="[0,6]" [minDate]="today"
+												[ngClass]="{'is-invalid': z['exit_day']?.invalid  && isExitSubmited,
+													'is-valid':z['exit_day']?.valid && isExitSubmited}"
+													 >
+												<div *ngIf="isExitSubmited && z['exit_day']" class="text-danger">
+													<div *ngIf="z['exit_day'].errors">Invalid Date</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="input-block mb-3">
+											<label class="col-form-label" for="">Start Time <span class="text-danger">*</span></label>
+											<div class="input-group time timepicker">
+												<input (click)="toggleTimePcker('StartTime')" readonly [value]="formatTime(zones)"
+													class="form-control">
+													<span class="input-group-text"><i
+														class="fa-regular fa-clock"></i></span>
+												<timepicker [class.show-sub-menu]="showTimePicker[0]==='StartTime'" [minuteStep]="1" 
+													[min]="minTime" [max]="maxStartTime" (click)="addOneHour()"
+													class="custom-timepicker" [ngModelOptions]="{standalone: true}" [(ngModel)]="zones"></timepicker>
+											</div>
+										</div>
+
+										<div class="input-block mb-3">
+											<label class="col-form-label" for="">End Time <span class="text-danger">*</span></label>
+											<div class="input-group time timepicker">
+												<input (click)="toggleTimePcker('newTime')" readonly [value]="formatTime(setTime)"
+													class="form-control">
+													<span class="input-group-text"><i
+														class="fa-regular fa-clock"></i></span>
+												<timepicker [class.show-sub-menu]="showTimePicker[0]==='newTime'"
+													class="custom-timepicker" 
+													[ngModelOptions]="{standalone: true}" [(ngModel)]="setTime" [min]="zones" [max]="maxTime"  [minuteStep]="0"></timepicker>
+											</div>
+										</div>
+
+										<div class="input-block mb-3">
+											<label class="col-form-label" for="">Number of Hours <span class="text-danger">*</span></label>
+											<input class="form-control" readonly type="text" formControlName="hours" [value]="calculateTimeDifference()"
+											[ngClass]="{'is-invalid': z['hours']?.invalid  && isExitSubmited,
+													'is-valid':z['hours']?.valid && isExitSubmited}"
+													 >
+												<div *ngIf="isExitSubmited && z['hours']" class="text-danger">
+												<div *ngIf="z['hours'].errors">Fix Your Hours</div>
+													<div *ngIf="z['hours'].value>this.remainExit">you passed your Remain Exit</div>
+												</div>
+										</div>
+										<div class="input-block mb-3">
+											<label class="col-form-label" for="">Remaining Exit <span class="text-danger">*</span></label>
+											<input class="form-control" readonly [value]="remainExit" type="text">
+										</div>
+										<div class="input-block mb-3">
+											<label class="col-form-label" for="">Exit Reason <span class="text-danger">*</span></label>
+											<textarea rows="4" class="form-control" formControlName="reason"[ngClass]="{'is-invalid': z['reason']?.invalid  && isExitSubmited,
+											'is-valid':z['reason']?.valid && isExitSubmited}"
+											 ></textarea>
+											<div *ngIf="isExitSubmited && z['reason']" class="text-danger">
+												<div *ngIf="z['reason'].errors">Reason is Required</div>
+											</div>
+										</div>
+										<div class="submit-section">
+											<button class="btn btn-primary submit-btn" (click)="addExitReaquest()">Submit</button>
+										</div>
+                                      </form>
+									</div>
+                                    </mat-step>
+                                  </mat-stepper>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Add Leaves Modal -->

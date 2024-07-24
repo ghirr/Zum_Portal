@@ -1,0 +1,44 @@
+.team-members {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  /* Ensure the container can grow to accommodate all images */
+  flex-grow: 1;
+}
+
+.team-members li {
+  flex: 0 0 auto; /* Do not grow, do not shrink, and base size on content */
+  margin-right: 10px;
+}
+table {
+  width: 130%; /* Or a specific width, ensure it's wide enough */
+}
+/* If your images are in, say, the second column */
+td:nth-child(2), th:nth-child(2) {
+  min-width: 200px; /* Adjust accordingly */
+}
+.avatar-group {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.avatar-scroll-container {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent avatars from wrapping to the next line */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  scrollbar-width: none; /* Hide scrollbar */
+  -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+}
+
+.avatar-scroll-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
+}
+
+.avatar {
+  margin-right: 10px; /* Adjust margin between avatars */
+}
+
+.avatar a {
+  max-width: 170%;
+  height: 70%;
+}

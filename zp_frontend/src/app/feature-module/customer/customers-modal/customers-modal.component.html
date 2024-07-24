@@ -1,0 +1,393 @@
+<!-- Add Client Modal -->
+<div id="add_client"  class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Customer</h5>
+                <button type="button" class="btn-close" (click)="resetForm()" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="addCustomerForm">
+                    
+                <div *ngIf="Errorfield!=''" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong>customer with this {{Errorfield}} already exists.
+                    <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    ><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" >Customer Name</label>
+                                <input class="form-control" type="text" 
+                                [ngClass]="{'is-invalid':addCustomerForm.get('name')?.invalid && submited,
+                                            'is-valid':addCustomerForm.get('name')?.valid && submited}"
+                                    formControlName="name" >
+                                    <div
+                                    *ngIf="addCustomerForm.get('name')?.invalid && submited">
+                                    <small
+                                        *ngIf="addCustomerForm.get('name')?.invalid && submited"
+                                        class="text-danger"> *Customer Name is required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" >Email</label>
+                                <input class="form-control" type="text"
+                                [ngClass]="{'is-invalid':addCustomerForm.get('email')?.invalid && submited,
+                                'is-valid':addCustomerForm.get('email')?.valid && submited}"
+                                    formControlName="email">
+                                <div
+                                    *ngIf="addCustomerForm.get('email')?.invalid && submited">
+                                    <small
+                                        *ngIf="addCustomerForm.controls['email'].errors?.['required']"
+                                        class="text-danger"> *Email is required</small>
+                                        <small
+                                        *ngIf="addCustomerForm.controls['email'].errors?.['pattern']"
+                                        class="text-danger"> Format Email</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" >Phone <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text"
+                                [ngClass]="{'is-invalid':addCustomerForm.get('phone')?.invalid && submited,
+                                'is-valid':addCustomerForm.get('phone')?.valid && submited}"
+                                    formControlName="phone">
+                                <div
+                                    *ngIf="addCustomerForm.get('phone')?.invalid && submited">
+                                    <small
+                                    *ngIf="addCustomerForm.controls['phone'].errors?.['required']"
+                                    class="text-danger"> Phone is required</small>
+                                    <small
+                                    *ngIf="addCustomerForm.controls['phone'].errors?.['pattern']"
+                                    class="text-danger">Only Numbers</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" >adress</label>
+                                <input class="form-control" type="text"
+                                [ngClass]="{'is-invalid':addCustomerForm.get('adress')?.invalid && submited,
+                                'is-valid':addCustomerForm.get('adress')?.valid && submited}"
+                                    formControlName="adress">
+                                <div
+                                    *ngIf="addCustomerForm.get('adress')?.invalid && submited">
+                                    <small
+                                        *ngIf="addCustomerForm.get('adress')?.invalid && submited"
+                                        class="text-danger"> *Adress is required</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="input-block mb-3 date-input3">
+                                <label class="col-form-label" >joining-date</label>
+                                <div class="cal-icon">
+                                    <input class="form-control datetimepicker" type="text" bsDatepicker container=".date-input3"
+                        
+                                    [ngClass]="{'is-invalid':addCustomerForm.get('joining_Date')?.invalid && submited,
+                                    'is-valid':addCustomerForm.get('joining_Date')?.valid && submited}"
+                                        formControlName="joining_Date">
+                                    <div
+                                        *ngIf="addCustomerForm.get('joining_Date')?.invalid && submited">
+                                        <small
+                                            *ngIf="addCustomerForm.get('joining_Date')?.invalid && submited"
+                                            class="text-danger"> *Joining date is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" >Description</label>
+                                <textarea class="form-control"
+                                [ngClass]="{'is-invalid':addCustomerForm.get('description')?.invalid && submited,
+                                'is-valid':addCustomerForm.get('description')?.valid && submited}"
+                                    formControlName="description"></textarea>
+                                <div
+                                    *ngIf="addCustomerForm.get('description')?.invalid && submited">
+                                    <small
+                                        *ngIf="addCustomerForm.get('description')?.invalid && addCustomerForm.get('description')?.touched"
+                                        class="text-danger"> Description is required</small>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-sm-12">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label col-lg-2">Attached Files</label>
+                                    <div class="col-lg-12">
+                                        <div class="custom-dropzone">
+                                            <span class="dropzone-text">Click or drag a file here</span>
+                                            <input type="file" class="dropzone-input" name="uploaded_files" multiple
+                                                (change)="onFileSelected($event)" formControlName="uploaded_files">
+                                        </div>
+                                        <div class="selected-file" *ngIf="selectedFiles && selectedFiles.length > 0"
+                                            style="display: flex; flex-wrap: wrap;">
+                                            <div class="chooseImg" *ngFor="let file of selectedFiles; let i = index">
+    
+                                                <span>{{ file.name }}</span>
+                                                <a (click)="removeSingleFile(i)" title="Remove"
+                                                    class="remove-file">&times;</a>
+    
+                                            </div>
+                                        </div>
+    
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        
+                        <div class="col-md-12">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" >Logo</label>
+                                <input type="file" class="form-control" id="validatedCustomFile" formControlName="image" (change)='onImageSelected($event)' accept="image/*">
+                                <div *ngIf="(showImage==false || image==undefined)&& submited" class="text-danger">
+                                    <span>Logo is required.</span>
+                                </div>
+                                <div *ngIf="showImage && image!=undefined" class="text-center mt-1">
+                                <img class="avatar-xl rounded-circle" [src]="imagePreview" alt="test">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button id="waywa" class="btn btn-primary submit-btn" (click)="addCustomer()" >Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Client Modal -->
+
+<!-- Edit Client Modal -->
+<div id="edit_client" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="resetForm()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+           <div class="modal-body">
+                <form [formGroup]="editCustomerForm">
+                    <div *ngIf="Errorfield!=''" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong>customer with this {{Errorfield}} already exists.
+                        <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        ><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >Customer Name</label>
+                                    <input class="form-control" type="text" [value]="customerData?.name"
+                                    [ngClass]="{'is-invalid':editCustomerForm.get('name')?.invalid && submited,
+                                                'is-valid':editCustomerForm.get('name')?.valid && submited}"
+                                        formControlName="name" readonly>
+                                        <div
+                                        *ngIf="editCustomerForm.get('name')?.invalid && submited">
+                                        <small
+                                            *ngIf="editCustomerForm.get('name')?.invalid && submited"
+                                            class="text-danger"> *Customer Name is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >Email</label>
+                                    <input class="form-control" type="text" [value]="customerData?.email"
+                                    [ngClass]="{'is-invalid':editCustomerForm.get('email')?.invalid && submited,
+                                    'is-valid':editCustomerForm.get('email')?.valid && submited}"
+                                        formControlName="email">
+                                    <div
+                                        *ngIf="editCustomerForm.get('email')?.invalid && submited">
+                                        <small
+                                            *ngIf="editCustomerForm.controls['email'].errors?.['required']"
+                                            class="text-danger"> *Email is required</small>
+                                            <small
+                                            *ngIf="editCustomerForm.controls['email'].errors?.['pattern']"
+                                            class="text-danger"> Format Email</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >Phone <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" [value]="customerData?.tel"
+                                    [ngClass]="{'is-invalid':editCustomerForm.get('phone')?.invalid && submited,
+                                    'is-valid':editCustomerForm.get('phone')?.valid && submited}"
+                                        formControlName="phone">
+                                    <div
+                                        *ngIf="editCustomerForm.get('phone')?.invalid && submited">
+                                        <small
+                                        *ngIf="editCustomerForm.controls['phone'].errors?.['required']"
+                                        class="text-danger"> Phone is required</small>
+                                        <small
+                                        *ngIf="editCustomerForm.controls['phone'].errors?.['pattern']"
+                                        class="text-danger">Only Numbers</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >adress</label>
+                                    <input class="form-control" type="text" [value]="customerData?.adress"
+                                    [ngClass]="{'is-invalid':editCustomerForm.get('adress')?.invalid && submited,
+                                    'is-valid':editCustomerForm.get('adress')?.valid && submited}"
+                                        formControlName="adress">
+                                    <div
+                                        *ngIf="editCustomerForm.get('adress')?.invalid && submited">
+                                        <small
+                                            *ngIf="editCustomerForm.get('adress')?.invalid && submited"
+                                            class="text-danger"> *Adress is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="input-block mb-3 date-input3">
+                                    <label class="col-form-label" >joining-date</label>
+                                    <div class="cal-icon">
+                                        <input class="form-control datetimepicker" type="text" [value]="customerData?.joining_Date | date:'MM/dd/yyy'"
+                                        bsDatepicker container=".date-input3"
+                                        [ngClass]="{'is-invalid':editCustomerForm.get('joining_Date')?.invalid && submited,
+                                        'is-valid':editCustomerForm.get('joining_Date')?.valid && submited}"
+                                            formControlName="joining_Date" [isDisabled]="customerData">
+                                        <div
+                                            *ngIf="editCustomerForm.get('joining_Date')?.invalid && submited">
+                                            <small
+                                                *ngIf="editCustomerForm.get('joining_Date')?.invalid && submited"
+                                                class="text-danger"> *Joining date is required</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >Number of Projects</label>
+                                    <input class="form-control" type="number" min="0" placeholder="0" [value]="customerData?.numOfProjects"
+                                    [ngClass]="{'is-invalid':editCustomerForm.get('projects')?.invalid && submited,
+                                    'is-valid':editCustomerForm.get('projects')?.valid && submited}"
+                                        formControlName="projects" readonly>
+                                    <div
+                                        *ngIf="editCustomerForm.get('projects')?.invalid && submited">
+                                        <small
+                                            *ngIf="editCustomerForm.get('projects')?.invalid && editCustomerForm.get('projects')?.touched"
+                                            class="text-danger"> *N° Of Projects is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >Description</label>
+                                    <textarea class="form-control" [value]="customerData?.description"
+                                    [ngClass]="{'is-invalid':editCustomerForm.get('description')?.invalid && submited,
+                                    'is-valid':editCustomerForm.get('description')?.valid && submited}"
+                                        formControlName="description"></textarea>
+                                    <div
+                                        *ngIf="editCustomerForm.get('description')?.invalid && submited">
+                                        <small
+                                            *ngIf="editCustomerForm.get('description')?.invalid && editCustomerForm.get('description')?.touched"
+                                            class="text-danger"> Description is required</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <div class="input-block mb-3">
+                                    <label class="col-form-label" >Logo</label>
+                                    <input type="file" class="form-control" id="validatedCustomFile" formControlName="image" (change)='onImageSelected($event)' accept="image/*">
+                                    <div *ngIf="showImage && image!=undefined" class="text-center mt-1">
+                                    <img class="avatar-xl rounded-circle" [src]="imagePreview" alt="test">
+                                    </div>
+                                    <div *ngIf="image==undefined" class="text-center mt-1">
+                                        <img class="avatar-xl rounded-circle" [src]="customerData?.customer_photo" alt="test">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="submit-section">
+                            <button id="waywa" class="btn btn-primary submit-btn" (click)="editCustomer()" >Submit</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Edit Client Modal -->
+
+<!-- Delete Client Modal -->
+<div class="modal custom-modal fade" id="delete_client" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Customer</h3>
+                    <p>Are you sure want to delete?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a  class="btn btn-primary continue-btn"
+                            (click)="deleteCustomer()">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <a  data-bs-dismiss="modal"
+                                class="btn btn-primary cancel-btn">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Delete Client Modal -->
+
+<!-- Add File Modal -->
+<div class="modal custom-modal fade" id="add_files" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Files</h5>
+                <button type="button" class="btn-close" (click)="resetForm()" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="input-block mb-3">
+                            <label class="col-form-label">Attached Files</label>
+                            <div class="col-lg-12">
+                                <div class="custom-dropzone">
+                                    <span class="dropzone-text">Click or drag a file here
+                                    <input type="file" class="dropzone-input" id="uploaded_files" multiple (change)="onFileSelected($event)">
+                                </span></div>
+                                <div class="selected-file" *ngIf="selectedFiles && selectedFiles.length > 0" style="display: flex; flex-wrap: wrap;">
+                                    <div class="chooseImg" *ngFor="let file of selectedFiles; let i = index">
+                                        <span>{{ file.name }}</span>
+                                        <a (click)="removeSingleFile(i)" title="Remove" class="remove-file">&times;</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submit-section">
+                        <button id="waywa" class="btn btn-primary submit-btn" (click)="addFiles()" >Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add File Modal -->

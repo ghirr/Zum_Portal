@@ -1,0 +1,136 @@
+<!-- Page Content -->
+<div class="content container-fluid">
+
+    <!-- Page Header -->
+  <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Leaves</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Leaves</li>
+                </ul>
+            </div>
+          <!----   <div class="col-auto float-end ms-auto">
+                <a class="btn add-btn" data-bs-toggle="modal" data-bs-target="#add_leave"><i class="fa-solid fa-plus"></i>
+                    Add Leave</a>
+            </div>-->
+        </div>
+    </div>
+    <!-- /Page Header -->
+
+
+    <!-- Leave Statistics -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="stats-info">
+                <h6>Today Presents</h6>
+                <h4 class="text-success"><b>{{presents}}</b></h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-info">
+                <h6>Planned Leaves</h6>
+                <h4><b>{{planned}}</b> <span>Today</span></h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-info">
+                <h6>Unplanned Leaves</h6>
+                <h4 class="text-danger"><b>{{unplanned}}</b> <span>Today</span></h4>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-info">
+                <h6>Pending Requests</h6>
+                <h4 class="text-info"><b>{{requestes}}</b></h4>
+            </div>
+        </div>
+    </div>
+    <!-- /Leave Statistics -->
+
+    <!-- Search Filter -->
+    <div class="row filter-row ">
+        <div class="col-sm-6 col-md-4">
+            <div class="input-block mb-3 form-focus select-focus select">
+              <mat-form-field>
+                <mat-label for="employee">Employee</mat-label>
+                <mat-select id="employee" class="mat-select mat-float-lable select" [(ngModel)]="selectedEmployee"  (selectionChange)="selectetedEmploye()">
+                  <mat-option *ngFor="let employee of employees " [value]="employee.id"><img class="avatar" [src]="employee.profile_photo || image" />{{employee.firstname}} {{employee.lastname}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-2" >
+            <button class="btn" type="button" [disabled]="!selectedEmployee" ><i class="fa-solid fa-magnifying-glass text-info"></i></button>
+        </div>
+    </div>
+    <!-- /Search Filter -->
+
+    <div class="row">
+		<div class="col-md-6">
+        <app-table-admin-tt (formSubmitted)="handleFormSubmission()"></app-table-admin-tt>
+	</div>
+		<div class="col-md-6">
+			<app-table-admin-exit (formSubmitted)="handleFormSubmission()"></app-table-admin-exit>
+        </div>
+		<div class="col-md-12">
+		<app-table-admin-leave (formSubmitted)="handleFormSubmission()"></app-table-admin-leave>
+        </div>
+    </div>
+</div>
+<!-- /Page Content -->
+<!-- Add Leave Modal -->
+<div id="add_leave" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Leave</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Leave Type <span class="text-danger">*</span></label>
+                        <mat-select  class="input-block mb-3 form-control"placeholder="Select Leave Type">
+                            <mat-option value="leave">Select Leave Type</mat-option>
+                            <mat-option value="2">Casual Leave 12 Days</mat-option>
+                            <mat-option value="3">Medical Leave</mat-option>
+                            <mat-option value="4">Loss of Pay</mat-option>
+                        </mat-select>
+                    </div>
+                    <div class="input-block mb-3 date-input3">
+                        <label class="col-form-label" for="">From <span class="text-danger">*</span></label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" bsDatepicker container=".date-input3" type="text">
+                        </div>
+                    </div>
+                    <div class="input-block mb-3 date-input4">
+                        <label class="col-form-label" for="">To <span class="text-danger">*</span></label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" bsDatepicker container=".date-input4" type="text">
+                        </div>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Number of days <span class="text-danger">*</span></label>
+                        <input class="form-control" readonly type="text">
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Remaining Leaves <span class="text-danger">*</span></label>
+                        <input class="form-control" readonly value="12" type="text">
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label" for="">Leave Reason <span class="text-danger">*</span></label>
+                        <textarea rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Add Leave Modal -->

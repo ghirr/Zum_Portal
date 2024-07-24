@@ -1,0 +1,196 @@
+
+[
+  {
+    "model": "authentication.User",      
+    "pk": 1,
+    "fields": {
+      "firstname": "meriem",
+      "email": "maryem@gmail.com",
+      "lastname": "sassi",
+      "role": "Manager",
+      "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+      "profile_photo":"profile_photos/mariem.jpg"
+    }
+  },
+  {
+    "model": "authentication.User",      
+    "pk": 50,
+    "fields": {
+      "firstname": "Chadi",
+      "email": "chadi@gmail.com",
+      "lastname": "Abbassi",
+      "role": "Manager",
+      "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+      "profile_photo":"profile_photos/sousou.jpg"
+    }
+  },
+  {
+    "model": "authentication.User",      
+    "pk": 11,
+    "fields": {
+      "firstname": "Sahar",
+      "email": "sahar@gmail.com",
+      "lastname": "Bibas",
+      "role": "Manager",
+      "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+      "profile_photo":"profile_photos/sahar.jpg"
+    }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 2,
+    "fields": {
+        "firstname": "ISLEM",
+        "email": "islemghariani.dev@gmail.com",
+        "lastname": "ghariani",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/islem.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 7,
+    "fields": {
+        "firstname": "sousou",
+        "email": "sousouuuu@gmail.com",
+        "lastname": "ghariani",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/sousou.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 9,
+    "fields": {
+        "firstname": "mimi",
+        "email": "mimita@gmail.com",
+        "lastname": "ghariani",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/mimi.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 10,
+    "fields": {
+        "firstname": "balkis",
+        "email": "balkousa@gmail.com",
+        "lastname": "ben Hazem",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/balkis.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 20,
+    "fields": {
+        "firstname": "moemen",
+        "email": "moemen@gmail.com",
+        "lastname": "ghariani",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/moemen.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 21,
+    "fields": {
+        "firstname": "farah",
+        "email": "farah@gmail.com",
+        "lastname": "trabelsi",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/farah.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 14,
+    "fields": {
+        "firstname": "mayssa",
+        "email": "mayssa@gmail.com",
+        "lastname": "nefzi",
+        "role": "Simple User",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/mayssa.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 3,
+    "fields": {
+        "firstname": "sousou",
+        "email": "sousou@gmail.com",
+        "lastname": "ghariani",
+        "role": "SU",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/sousou2.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 4,
+    "fields": {
+        "firstname": "mimi",
+        "email": "mimi@gmail.com",
+        "lastname": "ghariani",
+        "role": "SU",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/avatar-02.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 5,
+    "fields": {
+        "firstname": "youssef",
+        "email": "islem11@gmail.com",
+        "lastname": "ghariani",
+        "role": "Scrum Master",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/islem2.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 4,
+    "fields": {
+        "firstname": "nour",
+        "email": "nour@gmail.com",
+        "lastname": "allegui",
+        "role": "Scrum Master",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/nour.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 5,
+    "fields": {
+        "firstname": "rima",
+        "email": "rimou@gmail.com",
+        "lastname": "slema",
+        "role": "Scrum Master",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/rimou.jpg"
+      }
+  },
+  {
+    "model": "authentication.User",
+    "pk": 6,
+    "fields": {
+        "firstname": "manel",
+        "email": "manel@gmail.com",
+        "lastname": "dai",
+        "role": "Scrum Master",
+        "password":"pbkdf2_sha256$390000$Qvs9AGo7QrrFgJOtL3mGCE$+cOtSPPwvvWONHeHaPyT0vOyXdkI4Ds5yspFUQSo7iM=",
+        "profile_photo":"profile_photos/manel.jpg"
+      }
+  }
+  
+]

@@ -1,0 +1,50 @@
+.task-list-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+
+    .task-list-body {
+        
+        max-height: 105px;
+        overflow-y: auto;
+
+        #task-list {
+            list-style-type: none;
+            padding: 0;
+
+            .task {
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+                word-wrap: break-word;
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                .task-container {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .task-label {
+                        flex-grow: 1;
+                    }
+
+                    .task-action-btn {
+                        margin-left: 10px;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.description{
+    background-color: transparent;
+    border-radius: 50%;
+    box-shadow: 2px;
+    cursor: pointer;
+}

@@ -1,0 +1,81 @@
+    <!-- Page Content -->
+    <div class="content container-fluid">
+    
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h3 class="page-title">Leave Settings</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="routes.adminDashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Leave Settings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+        
+        <div class="row">
+            <div class="col-md-12">
+            
+                <!-- Annual Leave -->
+                <div class="card leave-box" id="leave_annual" *ngFor="let leave of leaveForms?.controls; let i = index;">
+                    <div class="card-body">
+                      <div class="h3 card-title with-switch">
+                        {{ leaves[i].name }}
+                        <div class="onoffswitch">
+                          <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" [id]="'switch_' + i" [(ngModel)]="editable[i]" (change)="toggleEdit(i)" checked>
+                          <label class="onoffswitch-label" [for]="'switch_' + i">
+                            <span class="onoffswitch-inner"></span>
+                            <span class="onoffswitch-switch"></span>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="leave-item">
+                        <form [formGroup]="toFormGroup(leave)">
+                          <div class="leave-row">
+                            <div class="leave-left">
+                              <div class="input-box">
+                                <div class="input-block mb-3">
+                                  <label class="col-form-label" for="">Minimum Days</label>
+                                  <input type="number" class="form-control" formControlName="minDays" >
+                                </div>
+                                <div *ngIf="toFormGroup(leave).get('minDays')?.errors?.['required'] && toFormGroup(leave).get('minDays')?.touched" class="text-danger">Minimum days is required.</div>
+                                <!-- Error handling for min validation -->
+                                <div *ngIf="toFormGroup(leave).get('minDays')?.errors?.['min'] && toFormGroup(leave).get('minDays')?.touched" class="text-danger">Minimum days must be at least 1.</div>
+                                <div *ngIf="toFormGroup(leave).get('minDays')?.errors?.['max'] && toFormGroup(leave).get('minDays')?.touched" class="text-danger">Maximum days is 30.</div>
+                                <div *ngIf="toFormGroup(leave).get('minDays')?.errors?.['pattern'] && toFormGroup(leave).get('minDays')?.touched" class="text-danger">Only Numbers</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="leave-row">
+                            <div class="leave-left">
+                              <div class="input-box">
+                                <div class="input-block mb-3">
+                                  <label class="col-form-label" for="">Maximum Days</label>
+                                  <input type="number" class="form-control" formControlName="maxDays" >
+                                </div>
+                                <div *ngIf="toFormGroup(leave).get('maxDays')?.errors?.['required'] && toFormGroup(leave).get('maxDays')?.touched" class="text-danger">Maximum days is required.</div>
+                                <!-- Error handling for min validation -->
+                                <div *ngIf="toFormGroup(leave).get('maxDays')?.errors?.['min'] && toFormGroup(leave).get('maxDays')?.touched" class="text-danger">Minimum days must be at least 1.</div>
+                                <div *ngIf="toFormGroup(leave).get('maxDays')?.errors?.['max'] && toFormGroup(leave).get('maxDays')?.touched" class="text-danger">Maximum days is 30.</div>
+                                <div *ngIf="toFormGroup(leave).get('maxDays')?.errors?.['pattern'] && toFormGroup(leave).get('maxDays')?.touched" class="text-danger">Only Numbers</div>
+                              </div>
+                            </div>
+                            <div class="leave-right">
+                              <button class="btn btn-white leave-cancel-btn" *ngIf="isEditing[i]" (click)="cancelEdit(i)">Cancel</button>
+                              <button class="btn btn-primary leave-save-btn" *ngIf="isEditing[i]" (click)="saveChanges(leaves[i])" type="button">Save</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  
+                <!-- /Annual Leave -->
+                
+            </div>
+        </div>
+            
+    </div>
+    <!-- /Page Content -->

@@ -1,0 +1,30 @@
+[
+    {
+      "model": "customers.customer",
+      "pk": 1,
+      "fields": {
+        "name": "Nirvana",
+        "email": "nirvana@us.com",
+        "tel": "0846123456789",
+        "joining_Date": "2022-01-01",
+        "numOfProjects": 5,
+        "customer_photo": "customer_photos/nirvana.png",
+        "description":"Nirvana was an influential American rock band that emerged in the late 1980s and became a defining force in the early 1990s grunge music scene",
+        "adress":" Rue Kenitra. 1000 TUNIS REPUBLIQUE TUNIS"
+      }
+    },
+    {
+      "model": "customers.customer",
+      "pk": 2,
+      "fields": {
+        "name": "Lego",
+        "email": "lego@ours.com",
+        "tel": "987654321",
+        "joining_Date": "2021-02-15",
+        "numOfProjects": 3,
+        "customer_photo": "customer_photos/LEGO.png",
+        "description":"Lego is a globally recognized brand of interlocking plastic bricks, toys, and construction sets",
+        "adress":"Billund, au Danemark, siège de The Lego Group"
+      }
+    }
+  ]
